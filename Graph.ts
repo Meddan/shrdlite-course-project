@@ -48,18 +48,29 @@ class SearchResult<Node> {
 * @param timeout Maximum time to spend performing A\* search.
 * @returns A search result, which contains the path from `start` to a node satisfying `goal` and the cost of this path.
 */
-function aStarSearch<Node> (
+function aStarSearch<Node>
+    (
     graph : Graph<Node>,
     start : Node,
     goal : (n:Node) => boolean,
     heuristics : (n:Node) => number,
     timeout : number
-) : SearchResult<Node> {
-    // A dummy search result: it just picks the first possible neighbour
+    )
+    : SearchResult<Node> {
     var result : SearchResult<Node> = {
         path: [start],
         cost: 0
     };
+    let closedSet : Node[];
+    let openSet : Node[] =  [start];
+    let cameFrom : { [key:Node]:Node; } = {};
+    let gScore : { [key:Node]:number; } = {};
+    let fScore : { [key:Node]:number; } = {};
+
+    // A dummy search result: it just picks the first possible neighbour
+
+
+    //
     while (result.path.length < 3) {
         var edge : Edge<Node> = graph.outgoingEdges(start) [0];
         if (! edge) break;
