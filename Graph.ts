@@ -1,6 +1,6 @@
 ///<reference path="lib/collections.ts"/>
 ///<reference path="lib/node.d.ts"/>
-
+///<reference path="dts/typescript/lib.es6.d.ts"/>
 /** Graph module
 *
 *  Types for generic A\* implementation.
@@ -63,9 +63,10 @@ function aStarSearch<Node>
     };
     let closedSet : Node[];
     let openSet : Node[] =  [start];
-    let cameFrom : { [key:Node]:Node; } = {};
-    let gScore : { [key:Node]:number; } = {};
-    let fScore : { [key:Node]:number; } = {};
+    let comeFrom : Map<Node, Node> = new Map<Node, Node>();
+    let gScore : Map<Node, number> = new Map<Node, number>();
+    let fScore : Map<Node, number> = new Map<Node, number>();
+
 
     // A dummy search result: it just picks the first possible neighbour
 
