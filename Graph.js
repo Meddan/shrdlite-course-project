@@ -18,6 +18,19 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     var comeFrom = new Map();
     var gScore = new Map();
     var fScore = new Map();
+    fScore.set(start, heuristics(start));
+    gScore.set(start, 0);
+    while (openSet.length != 0) {
+        var lowF = Infinity;
+        var current = null;
+        for (var _i = 0, openSet_1 = openSet; _i < openSet_1.length; _i++) {
+            var n = openSet_1[_i];
+            if (fScore.get(n) < lowF) {
+                lowF = gScore.get(n);
+                current = n;
+            }
+        }
+    }
     while (result.path.length < 3) {
         var edge = graph.outgoingEdges(start)[0];
         if (!edge)

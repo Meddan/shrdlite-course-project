@@ -66,7 +66,22 @@ function aStarSearch<Node>
     let comeFrom : Map<Node, Node> = new Map<Node, Node>();
     let gScore : Map<Node, number> = new Map<Node, number>();
     let fScore : Map<Node, number> = new Map<Node, number>();
+    fScore.set(start, heuristics(start));
+    gScore.set(start, 0);
 
+    while(openSet.length != 0) {
+        //Init variables
+        let lowF : number = Infinity;
+        let current : Node = null;
+        //Finding "current" by taking node in openSet with lowest fScore.
+        //Null otherwise
+        for(var n of openSet){
+            if(fScore.get(n) < lowF){
+              lowF = gScore.get(n);
+              current = n;
+            }
+        }
+    }
 
     // A dummy search result: it just picks the first possible neighbour
 
