@@ -117,6 +117,20 @@ function aStarSearch<Node>
 
 }
 
+function reconstruct_path<Node>
+  (
+    cameFrom : Map<Node, Node> = new Map<Node, Node>(),
+    current : Node
+  )
+  : Node[] {
+  let total_path = [current]
+  while (cameFrom.get(current) != null) {
+    current = cameFrom.get(current);
+    total_path.push(current);
+  }
+  return total_path
+}
+
 
 //////////////////////////////////////////////////////////////////////
 // here is an example graph

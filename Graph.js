@@ -58,6 +58,15 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     }
     return null;
 }
+function reconstruct_path(cameFrom, current) {
+    if (cameFrom === void 0) { cameFrom = new Map(); }
+    var total_path = [current];
+    while (cameFrom.get(current) != null) {
+        current = cameFrom.get(current);
+        total_path.push(current);
+    }
+    return total_path;
+}
 var GridNode = (function () {
     function GridNode(pos) {
         this.pos = pos;
