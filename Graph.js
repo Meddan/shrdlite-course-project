@@ -1,4 +1,3 @@
-"use strict";
 var Edge = (function () {
     function Edge() {
     }
@@ -16,18 +15,18 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     };
     var closedSet;
     var openSet = [start];
-    var cameFrom = new Map();
-    var gScore = new Map();
-    var fScore = new Map();
-    fScore.set(start, heuristics(start));
-    gScore.set(start, 0);
+    var cameFrom = {};
+    var gScore = {};
+    var fScore = {};
+    fScore[start.toString()] = heuristics(start);
+    gScore[start.toString()] = 0;
     while (openSet.length != 0) {
         var lowF = Infinity;
         var current = null;
         for (var _i = 0, openSet_1 = openSet; _i < openSet_1.length; _i++) {
             var n = openSet_1[_i];
-            if (fScore.get(n) < lowF) {
-                lowF = gScore.get(n);
+            if (fScore[n.toString()] < lowF) {
+                lowF = gScore[toString()];
                 current = n;
             }
         }
@@ -43,16 +42,16 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
             var e = listOfEdges_1[_a];
             var n = e.to;
             if (closedSet.indexOf(n) == -1) {
-                var tentative_gScore = gScore.get(current) + e.cost;
+                var tentative_gScore = gScore[current.toString()] + e.cost;
                 if (openSet.indexOf(n) == -1) {
                     openSet.push(n);
-                    fScore.set(n, Infinity);
-                    gScore.set(n, Infinity);
+                    fScore[n.toString()] = Infinity;
+                    gScore[n.toString()] = Infinity;
                 }
-                else if (tentative_gScore < gScore.get(n)) {
-                    cameFrom.set(n, current);
-                    gScore.set(n, tentative_gScore);
-                    fScore.set(n, gScore.get(n) + heuristics(n));
+                else if (tentative_gScore < gScore[n.toString()]) {
+                    cameFrom[n.toString()] = current;
+                    gScore[n.toString()] = tentative_gScore;
+                    fScore[n.toString()] = gScore[n.toString()] + heuristics(n);
                 }
             }
         }

@@ -1,6 +1,6 @@
 ///<reference path="lib/collections.ts"/>
 ///<reference path="lib/node.d.ts"/>
-import * as es6 from "node_modules/es6-collections/es6-collections.js";
+//import * as es6 from "node_modules/es6-collections/es6-collections.js";
 //import { Map } from "node_modules/es6-collections"
 /** Graph module
 *
@@ -65,11 +65,17 @@ function aStarSearch<Node>
     //gScore("apa") = 3
     let closedSet : Node[];
     let openSet : Node[] =  [start];
-    let cameFrom : Map<Node, Node> = new Map<Node, Node>();
-    let gScore : Map<Node, number> = new Map<Node, number>();
-    let fScore : Map<Node, number> = new Map<Node, number>();
-    fScore.set(start, heuristics(start));
-    gScore.set(start, 0);
+    let cameFrom : { [key : string]:Node; } = {};
+    let gScore : { [key : string]:number; } = {};
+    let fScore : { [key : string]:number; } = {};
+    //let cameFrom : Map<Node, Node> = new Map<Node, Node>();
+    //let gScore : Map<Node, number> = new Map<Node, number>();
+    //let fScore : Map<Node, number> = new Map<Node, number>();
+
+    fScore[start.toString()] = heuristics(start);
+    gScore[start.toString()] = 0
+    //fScore.set(start, heuristics(start));
+    //gScore.set(start, 0);
 
     while(openSet.length != 0) {
         //Init variables
@@ -79,8 +85,8 @@ function aStarSearch<Node>
         //Null otherwise
         for(var n of openSet){
             //Needs to check for null
-            if(fScore.get(n) < lowF){
-              lowF = gScore.get(n);
+            if(fScore[n.toString()] < lowF){
+              lowF = gScore[toString()];
               current = n;
             }
         }
@@ -99,18 +105,18 @@ function aStarSearch<Node>
         for(var e of listOfEdges){
           var n = e.to;
           if(closedSet.indexOf(n) == -1){
-            let tentative_gScore : number = gScore.get(current) + e.cost;
+            let tentative_gScore : number = gScore[current.toString()] + e.cost;
             //We find a new node
             if(openSet.indexOf(n) == -1){
               openSet.push(n);
               //Completly new nodes get g and f score of inf.
-              fScore.set(n,Infinity);
-              gScore.set(n,Infinity);
-            } else if (tentative_gScore < gScore.get(n)){ //gScore.get might be null, inf in that case
+              fScore[n.toString()] = Infinity;
+              gScore[n.toString()] = Infinity;
+            } else if (tentative_gScore < gScore[n.toString()]){ //gScore.get might be null, inf in that case
               //We rediscovered a node and the new path is better
-              cameFrom.set(n, current);
-              gScore.set(n,tentative_gScore);
-              fScore.set(n, gScore.get(n) + heuristics(n));
+              cameFrom[n.toString()] = current;
+              gScore[n.toString()] = tentative_gScore;
+              fScore[n.toString()] = gScore[n.toString()] + heuristics(n);
             }
           }
         }
