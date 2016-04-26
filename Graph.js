@@ -15,7 +15,7 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     };
     var closedSet;
     var openSet = [start];
-    var comeFrom = new Map();
+    var cameFrom = new Map();
     var gScore = new Map();
     var fScore = new Map();
     fScore.set(start, heuristics(start));
@@ -30,16 +30,33 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
                 current = n;
             }
         }
+        if (goal(current)) {
+        }
+        var index = openSet.indexOf(current);
+        if (index > -1) {
+            openSet.splice(index, 1);
+        }
+        closedSet.push(current);
+        var listOfEdges = graph.outgoingEdges(current);
+        for (var _a = 0, listOfEdges_1 = listOfEdges; _a < listOfEdges_1.length; _a++) {
+            var e = listOfEdges_1[_a];
+            var n = e.to;
+            if (closedSet.indexOf(n) == -1) {
+                var tentative_gScore = gScore.get(current) + e.cost;
+                if (openSet.indexOf(n) == -1) {
+                    openSet.push(n);
+                    fScore.set(n, Infinity);
+                    gScore.set(n, Infinity);
+                }
+                else if (tentative_gScore < gScore.get(n)) {
+                    cameFrom.set(n, current);
+                    gScore.set(n, tentative_gScore);
+                    fScore.set(n, gScore.get(n) + heuristics(n));
+                }
+            }
+        }
     }
-    while (result.path.length < 3) {
-        var edge = graph.outgoingEdges(start)[0];
-        if (!edge)
-            break;
-        start = edge.to;
-        result.path.push(start);
-        result.cost += edge.cost;
-    }
-    return result;
+    return null;
 }
 var GridNode = (function () {
     function GridNode(pos) {

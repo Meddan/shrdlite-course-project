@@ -63,7 +63,7 @@ function aStarSearch<Node>
     };
     let closedSet : Node[];
     let openSet : Node[] =  [start];
-    let comeFrom : Map<Node, Node> = new Map<Node, Node>();
+    let cameFrom : Map<Node, Node> = new Map<Node, Node>();
     let gScore : Map<Node, number> = new Map<Node, number>();
     let fScore : Map<Node, number> = new Map<Node, number>();
     fScore.set(start, heuristics(start));
@@ -76,25 +76,45 @@ function aStarSearch<Node>
         //Finding "current" by taking node in openSet with lowest fScore.
         //Null otherwise
         for(var n of openSet){
+            //Needs to check for null
             if(fScore.get(n) < lowF){
               lowF = gScore.get(n);
               current = n;
             }
         }
+        if (goal(current)){
+          //return reconstruct path.
+        }
+        //remove current from openSet
+        var index = openSet.indexOf(current);
+        if (index > -1) {
+          openSet.splice(index, 1);
+        }
+        //add to current set
+        closedSet.push(current);
+        //Find all neighbours to current
+        let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
+        for(var e of listOfEdges){
+          var n = e.to;
+          if(closedSet.indexOf(n) == -1){
+            let tentative_gScore : number = gScore.get(current) + e.cost;
+            //We find a new node
+            if(openSet.indexOf(n) == -1){
+              openSet.push(n);
+              //Completly new nodes get g and f score of inf.
+              fScore.set(n,Infinity);
+              gScore.set(n,Infinity);
+            } else if (tentative_gScore < gScore.get(n)){ //gScore.get might be null, inf in that case
+              //We rediscovered a node and the new path is better
+              cameFrom.set(n, current);
+              gScore.set(n,tentative_gScore);
+              fScore.set(n, gScore.get(n) + heuristics(n));
+            }
+          }
+        }
     }
+    return null;
 
-    // A dummy search result: it just picks the first possible neighbour
-
-
-    //
-    while (result.path.length < 3) {
-        var edge : Edge<Node> = graph.outgoingEdges(start) [0];
-        if (! edge) break;
-        start = edge.to;
-        result.path.push(start);
-        result.cost += edge.cost;
-    }
-    return result;
 }
 
 
