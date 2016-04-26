@@ -1,6 +1,7 @@
 ///<reference path="lib/collections.ts"/>
 ///<reference path="lib/node.d.ts"/>
-///<reference path="dts/typescript/lib.es6.d.ts"/>
+import * as es6 from "node_modules/es6-collections/es6-collections.js";
+//import { Map } from "node_modules/es6-collections"
 /** Graph module
 *
 *  Types for generic A\* implementation.
