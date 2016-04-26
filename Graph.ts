@@ -62,6 +62,7 @@ function aStarSearch<Node>
         path: [start],
         cost: 0
     };
+    //gScore("apa") = 3
     let closedSet : Node[];
     let openSet : Node[] =  [start];
     let cameFrom : Map<Node, Node> = new Map<Node, Node>();
