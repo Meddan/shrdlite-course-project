@@ -2581,14 +2581,12 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
         }
         //goal(current)
         //console.log("CURRENT CHOSEN")
+        //console.log(current.toString())
         if (goal(current)) {
-            console.log("GOAL");
-            console.log(cameFrom.toString());
-            console.log("GOAL  == CURRENT");
             var result_1 = new SearchResult();
-            result_1.path = reconstruct_path(cameFrom, current);
-            result_1.cost = 0;
-            //result.cost = gScore.getValue(current);
+            result_1.path = reconstruct_path(cameFrom, current).reverse();
+            //result.cost = current;
+            result_1.cost = gScore.getValue(current);
             return (result_1);
         }
         //console.log("NOT GOAL")
@@ -2607,28 +2605,25 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
             var e = listOfEdges_1[_b];
             //console.log("FOR ALL neighbour")
             var n = e.to;
-            if (!closedSet.contains(n)) {
-                var tentative_gScore = lookup(gScore, current) + e.cost;
-                if (tentative_gScore != Infinity) {
-                    console.log("tgs");
-                    console.log(tentative_gScore);
-                }
-                //We find a new node
-                if (!openSet.contains(n)) {
-                    //console.log("ADDING TO OPEN")
-                    openSet.add(n);
-                }
-                else if (tentative_gScore < lookup(gScore, n)) {
-                    //We rediscovered a node and the new path is better
-                    console.log("found better path");
-                    cameFrom.setValue(n, current);
-                    gScore.setValue(n, tentative_gScore);
-                    fScore.setValue(n, gScore.getValue(n) + heuristics(n));
-                }
+            if (closedSet.contains(n)) {
+                continue;
             }
+            var tentative_gScore = lookup(gScore, current) + e.cost;
+            //We find a new node
+            if (!openSet.contains(n)) {
+                //console.log("ADDING TO OPEN")
+                openSet.add(n);
+            }
+            else if (tentative_gScore >= lookup(gScore, n)) {
+                //console.log("worse path")
+                continue;
+            }
+            cameFrom.setValue(n, current);
+            gScore.setValue(n, tentative_gScore);
+            fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
     }
-    console.log("FAIL TO FIND");
+    //console.log("FAIL TO FIND")
     return null;
 }
 function lookup(dic, target) {
