@@ -77,41 +77,55 @@ function aStarSearch<Node>
 
     while(openSet.size() != 0) {
         //Init variables
+        //console.log("AT START OF WHILE")
         let lowF : number = Infinity;
         let current : Node = null;
         //Finding "current" by taking node in openSet with lowest fScore.
         //Null otherwise
         for(var n of openSet.toArray()){
             //Needs to check for null
-            if(fScore.getValue(n) < lowF){
-              lowF = gScore.getValue(n);
+            if(lookup(fScore,n) <= lowF){
+              //console.log("if")
+              lowF = lookup(gScore,n);
               current = n;
             }
         }
-        if(current == start){
-          console.log("WE START AT START");
-        }
+        //goal(current)
+        //console.log("CURRENT CHOSEN")
         if (goal(current)){
-          console.log("GOAL == CURRENT")
+          console.log("GOAL")
+          console.log(cameFrom.toString());
+          console.log("GOAL  == CURRENT")
           let result = new SearchResult<Node>();
           result.path = reconstruct_path(cameFrom, current);
-          result.cost = gScore.getValue(current);
+          result.cost = 0;
+          //result.cost = gScore.getValue(current);
           return(result);
         }
+        //console.log("NOT GOAL")
         //remove current from openSet
+        //console.log(current.toString())
         openSet.remove(current);
+        //console.log("os.r")
         //add to current set
         closedSet.add(current);
+        //console.log("cs.a")
         //Find all neighbours to current
         let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
+        //console.log("loe.l")
+        //console.log(listOfEdges.length)
         for(var e of listOfEdges){
-          console.log("FOR ALL neighbour")
+          //console.log("FOR ALL neighbour")
           var n = e.to;
           if(!closedSet.contains(n)){
             let tentative_gScore : number = lookup(gScore, current) + e.cost;
+            if(tentative_gScore != Infinity){
+              console.log("tgs")
+              console.log(tentative_gScore)
+            }
             //We find a new node
             if(!openSet.contains(n)){
-              console.log("ADDING TO OPEN")
+              //console.log("ADDING TO OPEN")
               openSet.add(n);
               //Completly new nodes get g and f score of inf.
               //fScore.setValue(n, Infinity);
@@ -125,8 +139,8 @@ function aStarSearch<Node>
             }
           }
         }
-        console.log("END OF WHILE")
-        console.log(openSet.size())
+        //console.log("END OF WHILE")
+        //console.log(openSet.size())
     }
     console.log("FAIL TO FIND")
     return null;
@@ -136,10 +150,11 @@ function lookup<Node>(
   dic : collections.Dictionary<Node,number>,
   target : Node
 ){
-  console.log("LOOKUP")
+  //console.log("LOOKUP")
   if(dic.containsKey(target)){
     return dic.getValue(target);
   } else {
+    //console.log("not in dic")
     return Infinity;
   }
 }

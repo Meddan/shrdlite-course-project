@@ -2565,6 +2565,7 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     gScore.setValue(start, 0);
     while (openSet.size() != 0) {
         //Init variables
+        //console.log("AT START OF WHILE")
         var lowF = Infinity;
         var current = null;
         //Finding "current" by taking node in openSet with lowest fScore.
@@ -2572,36 +2573,49 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
         for (var _i = 0, _a = openSet.toArray(); _i < _a.length; _i++) {
             var n = _a[_i];
             //Needs to check for null
-            if (fScore.getValue(n) < lowF) {
-                lowF = gScore.getValue(n);
+            if (lookup(fScore, n) <= lowF) {
+                //console.log("if")
+                lowF = lookup(gScore, n);
                 current = n;
             }
         }
-        if (current == start) {
-            console.log("WE START AT START");
-        }
+        //goal(current)
+        //console.log("CURRENT CHOSEN")
         if (goal(current)) {
-            console.log("GOAL == CURRENT");
+            console.log("GOAL");
+            console.log(cameFrom.toString());
+            console.log("GOAL  == CURRENT");
             var result_1 = new SearchResult();
             result_1.path = reconstruct_path(cameFrom, current);
-            result_1.cost = gScore.getValue(current);
+            result_1.cost = 0;
+            //result.cost = gScore.getValue(current);
             return (result_1);
         }
+        //console.log("NOT GOAL")
         //remove current from openSet
+        //console.log(current.toString())
         openSet.remove(current);
+        //console.log("os.r")
         //add to current set
         closedSet.add(current);
+        //console.log("cs.a")
         //Find all neighbours to current
         var listOfEdges = graph.outgoingEdges(current);
+        //console.log("loe.l")
+        //console.log(listOfEdges.length)
         for (var _b = 0, listOfEdges_1 = listOfEdges; _b < listOfEdges_1.length; _b++) {
             var e = listOfEdges_1[_b];
-            console.log("FOR ALL neighbour");
+            //console.log("FOR ALL neighbour")
             var n = e.to;
             if (!closedSet.contains(n)) {
                 var tentative_gScore = lookup(gScore, current) + e.cost;
+                if (tentative_gScore != Infinity) {
+                    console.log("tgs");
+                    console.log(tentative_gScore);
+                }
                 //We find a new node
                 if (!openSet.contains(n)) {
-                    console.log("ADDING TO OPEN");
+                    //console.log("ADDING TO OPEN")
                     openSet.add(n);
                 }
                 else if (tentative_gScore < lookup(gScore, n)) {
@@ -2613,18 +2627,17 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
                 }
             }
         }
-        console.log("END OF WHILE");
-        console.log(openSet.size());
     }
     console.log("FAIL TO FIND");
     return null;
 }
 function lookup(dic, target) {
-    console.log("LOOKUP");
+    //console.log("LOOKUP")
     if (dic.containsKey(target)) {
         return dic.getValue(target);
     }
     else {
+        //console.log("not in dic")
         return Infinity;
     }
 }
