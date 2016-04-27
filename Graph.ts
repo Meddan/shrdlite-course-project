@@ -62,85 +62,55 @@ function aStarSearch<Node>
         path: [start],
         cost: 0
     };
-    //gScore("apa") = 3
     let closedSet : collections.Set<Node> = new collections.Set<Node>();
     let openSet : collections.Set<Node> = new collections.Set<Node>();
     let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>();
     let gScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
     let fScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
     openSet.add(start);
-    //let cameFrom : Map<Node, Node> = new Map<Node, Node>();
-    //let gScore : Map<Node, number> = new Map<Node, number>();
-    //let fScore : Map<Node, number> = new Map<Node, number>();
     fScore.setValue(start,heuristics(start));
     gScore.setValue(start,0);
 
     while(openSet.size() != 0) {
         //Init variables
-        //console.log("AT START OF WHILE")
         let lowF : number = Infinity;
         let current : Node = null;
         //Finding "current" by taking node in openSet with lowest fScore.
-        //Null otherwise
+        //Null otherwise (which should never happen)
         for(var n of openSet.toArray()){
             //Needs to check for null
             if(lookup(fScore,n) <= lowF){
-              //console.log("if")
               lowF = lookup(gScore,n);
               current = n;
             }
         }
-        //goal(current)
-        //console.log("CURRENT CHOSEN")
         if (goal(current)){
-          console.log("GOAL")
-          console.log(cameFrom.toString());
-          console.log("GOAL  == CURRENT")
           let result = new SearchResult<Node>();
-          result.path = reconstruct_path(cameFrom, current);
-          result.cost = 0;
-          //result.cost = gScore.getValue(current);
+          result.path = reconstruct_path(cameFrom, current).reverse();
+          result.cost = gScore.getValue(current);
           return(result);
         }
-        //console.log("NOT GOAL")
-        //remove current from openSet
-        //console.log(current.toString())
         openSet.remove(current);
-        //console.log("os.r")
-        //add to current set
         closedSet.add(current);
-        //console.log("cs.a")
         //Find all neighbours to current
         let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
-        //console.log("loe.l")
-        //console.log(listOfEdges.length)
         for(var e of listOfEdges){
-          //console.log("FOR ALL neighbour")
           var n = e.to;
           if(closedSet.contains(n)) {
-            break
+            continue
           }
           let tentative_gScore : number = lookup(gScore, current) + e.cost;
           //We find a new node
           if(!openSet.contains(n)){
-              //console.log("ADDING TO OPEN")
               openSet.add(n);
-              //Completly new nodes get g and f score of inf.
-              //fScore.setValue(n, Infinity);
-              //gScore.setValue(n, Infinity);
-          } else if (tentative_gScore >= lookup(gScore, n)){ //gScore.get might be null, inf in that case
-            break
+          } else if (tentative_gScore >= lookup(gScore, n)){
+            continue
           }
-          //We rediscovered a node and the new path is better
-          //console.log("found better path")
           cameFrom.setValue(n, current);
           gScore.setValue(n, tentative_gScore);
           fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
-        //console.log("END OF WHILE")
-        //console.log(openSet.size())
     }
-    console.log("FAIL TO FIND")
     return null;
 
 }
@@ -148,11 +118,9 @@ function lookup<Node>(
   dic : collections.Dictionary<Node,number>,
   target : Node
 ){
-  //console.log("LOOKUP")
   if(dic.containsKey(target)){
     return dic.getValue(target);
   } else {
-    //console.log("not in dic")
     return Infinity;
   }
 }

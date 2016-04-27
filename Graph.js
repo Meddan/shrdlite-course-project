@@ -32,12 +32,9 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
             }
         }
         if (goal(current)) {
-            console.log("GOAL");
-            console.log(cameFrom.toString());
-            console.log("GOAL  == CURRENT");
             var result_1 = new SearchResult();
-            result_1.path = reconstruct_path(cameFrom, current);
-            result_1.cost = 0;
+            result_1.path = reconstruct_path(cameFrom, current).reverse();
+            result_1.cost = gScore.getValue(current);
             return (result_1);
         }
         openSet.remove(current);
@@ -47,21 +44,20 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
             var e = listOfEdges_1[_b];
             var n = e.to;
             if (closedSet.contains(n)) {
-                break;
+                continue;
             }
             var tentative_gScore = lookup(gScore, current) + e.cost;
             if (!openSet.contains(n)) {
                 openSet.add(n);
             }
             else if (tentative_gScore >= lookup(gScore, n)) {
-                break;
+                continue;
             }
             cameFrom.setValue(n, current);
             gScore.setValue(n, tentative_gScore);
             fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
     }
-    console.log("FAIL TO FIND");
     return null;
 }
 function lookup(dic, target) {
