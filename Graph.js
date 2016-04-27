@@ -46,22 +46,19 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
         for (var _b = 0, listOfEdges_1 = listOfEdges; _b < listOfEdges_1.length; _b++) {
             var e = listOfEdges_1[_b];
             var n = e.to;
-            if (!closedSet.contains(n)) {
-                var tentative_gScore = lookup(gScore, current) + e.cost;
-                if (tentative_gScore != Infinity) {
-                    console.log("tgs");
-                    console.log(tentative_gScore);
-                }
-                if (!openSet.contains(n)) {
-                    openSet.add(n);
-                }
-                else if (tentative_gScore < lookup(gScore, n)) {
-                    console.log("found better path");
-                    cameFrom.setValue(n, current);
-                    gScore.setValue(n, tentative_gScore);
-                    fScore.setValue(n, gScore.getValue(n) + heuristics(n));
-                }
+            if (closedSet.contains(n)) {
+                break;
             }
+            var tentative_gScore = lookup(gScore, current) + e.cost;
+            if (!openSet.contains(n)) {
+                openSet.add(n);
+            }
+            else if (tentative_gScore >= lookup(gScore, n)) {
+                break;
+            }
+            cameFrom.setValue(n, current);
+            gScore.setValue(n, tentative_gScore);
+            fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
     }
     console.log("FAIL TO FIND");

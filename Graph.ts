@@ -117,27 +117,25 @@ function aStarSearch<Node>
         for(var e of listOfEdges){
           //console.log("FOR ALL neighbour")
           var n = e.to;
-          if(!closedSet.contains(n)){
-            let tentative_gScore : number = lookup(gScore, current) + e.cost;
-            if(tentative_gScore != Infinity){
-              console.log("tgs")
-              console.log(tentative_gScore)
-            }
-            //We find a new node
-            if(!openSet.contains(n)){
+          if(closedSet.contains(n)) {
+            break
+          }
+          let tentative_gScore : number = lookup(gScore, current) + e.cost;
+          //We find a new node
+          if(!openSet.contains(n)){
               //console.log("ADDING TO OPEN")
               openSet.add(n);
               //Completly new nodes get g and f score of inf.
               //fScore.setValue(n, Infinity);
               //gScore.setValue(n, Infinity);
-            } else if (tentative_gScore < lookup(gScore, n)){ //gScore.get might be null, inf in that case
-              //We rediscovered a node and the new path is better
-              console.log("found better path")
-              cameFrom.setValue(n, current);
-              gScore.setValue(n, tentative_gScore);
-              fScore.setValue(n, gScore.getValue(n) + heuristics(n));
-            }
+          } else if (tentative_gScore >= lookup(gScore, n)){ //gScore.get might be null, inf in that case
+            break
           }
+          //We rediscovered a node and the new path is better
+          //console.log("found better path")
+          cameFrom.setValue(n, current);
+          gScore.setValue(n, tentative_gScore);
+          fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
         //console.log("END OF WHILE")
         //console.log(openSet.size())
