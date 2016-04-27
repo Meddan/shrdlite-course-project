@@ -31,36 +31,45 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
                 current = n;
             }
         }
+        if (current == start) {
+            console.log("WE START AT START");
+        }
         if (goal(current)) {
             console.log("GOAL == CURRENT");
             var result_1 = new SearchResult();
             result_1.path = reconstruct_path(cameFrom, current);
             result_1.cost = gScore.getValue(current);
+            return (result_1);
         }
         openSet.remove(current);
         closedSet.add(current);
         var listOfEdges = graph.outgoingEdges(current);
         for (var _b = 0, listOfEdges_1 = listOfEdges; _b < listOfEdges_1.length; _b++) {
             var e = listOfEdges_1[_b];
+            console.log("FOR ALL neighbour");
             var n = e.to;
             if (!closedSet.contains(n)) {
-                var tentative_gScore = gScore.getValue(current) + e.cost;
+                var tentative_gScore = lookup(gScore, current) + e.cost;
                 if (!openSet.contains(n)) {
+                    console.log("ADDING TO OPEN");
                     openSet.add(n);
-                    fScore.setValue(n, Infinity);
-                    gScore.setValue(n, Infinity);
                 }
-                else if (tentative_gScore < gScore.getValue(n)) {
+                else if (tentative_gScore < lookup(gScore, n)) {
+                    console.log("found better path");
                     cameFrom.setValue(n, current);
                     gScore.setValue(n, tentative_gScore);
                     fScore.setValue(n, gScore.getValue(n) + heuristics(n));
                 }
             }
         }
+        console.log("END OF WHILE");
+        console.log(openSet.size());
     }
+    console.log("FAIL TO FIND");
     return null;
 }
 function lookup(dic, target) {
+    console.log("LOOKUP");
     if (dic.containsKey(target)) {
         return dic.getValue(target);
     }

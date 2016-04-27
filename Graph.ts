@@ -74,8 +74,6 @@ function aStarSearch<Node>
     //let fScore : Map<Node, number> = new Map<Node, number>();
     fScore.setValue(start,heuristics(start));
     gScore.setValue(start,0);
-    //fScore.set(start, heuristics(start));
-    //gScore.set(start, 0);
 
     while(openSet.size() != 0) {
         //Init variables
@@ -90,11 +88,15 @@ function aStarSearch<Node>
               current = n;
             }
         }
+        if(current == start){
+          console.log("WE START AT START");
+        }
         if (goal(current)){
           console.log("GOAL == CURRENT")
           let result = new SearchResult<Node>();
           result.path = reconstruct_path(cameFrom, current);
           result.cost = gScore.getValue(current);
+          return(result);
         }
         //remove current from openSet
         openSet.remove(current);
@@ -103,24 +105,30 @@ function aStarSearch<Node>
         //Find all neighbours to current
         let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
         for(var e of listOfEdges){
+          console.log("FOR ALL neighbour")
           var n = e.to;
           if(!closedSet.contains(n)){
-            let tentative_gScore : number = gScore.getValue(current) + e.cost;
+            let tentative_gScore : number = lookup(gScore, current) + e.cost;
             //We find a new node
             if(!openSet.contains(n)){
+              console.log("ADDING TO OPEN")
               openSet.add(n);
               //Completly new nodes get g and f score of inf.
-              fScore.setValue(n, Infinity);
-              gScore.setValue(n, Infinity);
-            } else if (tentative_gScore < gScore.getValue(n)){ //gScore.get might be null, inf in that case
+              //fScore.setValue(n, Infinity);
+              //gScore.setValue(n, Infinity);
+            } else if (tentative_gScore < lookup(gScore, n)){ //gScore.get might be null, inf in that case
               //We rediscovered a node and the new path is better
+              console.log("found better path")
               cameFrom.setValue(n, current);
               gScore.setValue(n, tentative_gScore);
               fScore.setValue(n, gScore.getValue(n) + heuristics(n));
             }
           }
         }
+        console.log("END OF WHILE")
+        console.log(openSet.size())
     }
+    console.log("FAIL TO FIND")
     return null;
 
 }
@@ -128,6 +136,7 @@ function lookup<Node>(
   dic : collections.Dictionary<Node,number>,
   target : Node
 ){
+  console.log("LOOKUP")
   if(dic.containsKey(target)){
     return dic.getValue(target);
   } else {
