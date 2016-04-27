@@ -63,60 +63,59 @@ function aStarSearch<Node>
         cost: 0
     };
     //gScore("apa") = 3
-    let closedSet : Node[];
-    let openSet : Node[] =  [start];
-    let cameFrom : { [key : string]:Node; } = {};
-    let gScore : { [key : string]:number; } = {};
-    let fScore : { [key : string]:number; } = {};
+    let closedSet : collections.Set<Node> = new collections.Set<Node>();
+    let openSet : collections.Set<Node> = new collections.Set<Node>();
+    let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>();
+    let gScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
+    let fScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
+    openSet.add(start);
     //let cameFrom : Map<Node, Node> = new Map<Node, Node>();
     //let gScore : Map<Node, number> = new Map<Node, number>();
     //let fScore : Map<Node, number> = new Map<Node, number>();
-
-    fScore[start.toString()] = heuristics(start);
-    gScore[start.toString()] = 0
+    fScore.setValue(start,heuristics(start));
+    gScore.setValue(start,0);
     //fScore.set(start, heuristics(start));
     //gScore.set(start, 0);
 
-    while(openSet.length != 0) {
+    while(openSet.size() != 0) {
         //Init variables
         let lowF : number = Infinity;
         let current : Node = null;
         //Finding "current" by taking node in openSet with lowest fScore.
         //Null otherwise
-        for(var n of openSet){
+        for(var n of openSet.toArray()){
             //Needs to check for null
-            if(fScore[n.toString()] < lowF){
-              lowF = gScore[toString()];
+            if(fScore.getValue(n) < lowF){
+              lowF = gScore.getValue(n);
               current = n;
             }
         }
         if (goal(current)){
-          //return reconstruct path.
+          let result = new SearchResult<Node>();
+          result.path = reconstruct_path(cameFrom, current);
+          result.cost = gScore.getValue(current);
         }
         //remove current from openSet
-        var index = openSet.indexOf(current);
-        if (index > -1) {
-          openSet.splice(index, 1);
-        }
+        openSet.remove(current);
         //add to current set
-        closedSet.push(current);
+        closedSet.add(current);
         //Find all neighbours to current
         let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
         for(var e of listOfEdges){
           var n = e.to;
-          if(closedSet.indexOf(n) == -1){
-            let tentative_gScore : number = gScore[current.toString()] + e.cost;
+          if(!closedSet.contains(n)){
+            let tentative_gScore : number = gScore.getValue(current) + e.cost;
             //We find a new node
-            if(openSet.indexOf(n) == -1){
-              openSet.push(n);
+            if(!openSet.contains(n)){
+              openSet.add(n);
               //Completly new nodes get g and f score of inf.
-              fScore[n.toString()] = Infinity;
-              gScore[n.toString()] = Infinity;
-            } else if (tentative_gScore < gScore[n.toString()]){ //gScore.get might be null, inf in that case
+              fScore.setValue(n, Infinity);
+              gScore.setValue(n, Infinity);
+            } else if (tentative_gScore < gScore.getValue(n)){ //gScore.get might be null, inf in that case
               //We rediscovered a node and the new path is better
-              cameFrom[n.toString()] = current;
-              gScore[n.toString()] = tentative_gScore;
-              fScore[n.toString()] = gScore[n.toString()] + heuristics(n);
+              cameFrom.setValue(n, current);
+              gScore.setValue(n, tentative_gScore);
+              fScore.setValue(n, gScore.getValue(n) + heuristics(n));
             }
           }
         }
@@ -127,16 +126,17 @@ function aStarSearch<Node>
 
 function reconstruct_path<Node>
   (
-    cameFrom : Map<Node, Node> = new Map<Node, Node>(),
+    cameFrom : collections.Dictionary<Node, Node>,
     current : Node
   )
   : Node[] {
   let total_path = [current]
-  while (cameFrom.get(current) != null) {
-    current = cameFrom.get(current);
+  let total_cost = 0;
+  while (cameFrom.getValue(current) != null) {
+    current = cameFrom.getValue(current);
     total_path.push(current);
   }
-  return total_path
+  return total_path;
 }
 
 

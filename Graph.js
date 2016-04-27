@@ -13,45 +13,46 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
         path: [start],
         cost: 0
     };
-    var closedSet;
-    var openSet = [start];
-    var cameFrom = {};
-    var gScore = {};
-    var fScore = {};
-    fScore[start.toString()] = heuristics(start);
-    gScore[start.toString()] = 0;
-    while (openSet.length != 0) {
+    var closedSet = new collections.Set();
+    var openSet = new collections.Set();
+    var cameFrom = new collections.Dictionary();
+    var gScore = new collections.Dictionary();
+    var fScore = new collections.Dictionary();
+    openSet.add(start);
+    fScore.setValue(start, heuristics(start));
+    gScore.setValue(start, 0);
+    while (openSet.size() != 0) {
         var lowF = Infinity;
         var current = null;
-        for (var _i = 0, openSet_1 = openSet; _i < openSet_1.length; _i++) {
-            var n = openSet_1[_i];
-            if (fScore[n.toString()] < lowF) {
-                lowF = gScore[toString()];
+        for (var _i = 0, _a = openSet.toArray(); _i < _a.length; _i++) {
+            var n = _a[_i];
+            if (fScore.getValue(n) < lowF) {
+                lowF = gScore.getValue(n);
                 current = n;
             }
         }
         if (goal(current)) {
+            var result_1 = new SearchResult();
+            result_1.path = reconstruct_path(cameFrom, current);
+            result_1.cost = gScore.getValue(current);
         }
-        var index = openSet.indexOf(current);
-        if (index > -1) {
-            openSet.splice(index, 1);
-        }
-        closedSet.push(current);
+        openSet.remove(current);
+        closedSet.add(current);
         var listOfEdges = graph.outgoingEdges(current);
-        for (var _a = 0, listOfEdges_1 = listOfEdges; _a < listOfEdges_1.length; _a++) {
-            var e = listOfEdges_1[_a];
+        for (var _b = 0, listOfEdges_1 = listOfEdges; _b < listOfEdges_1.length; _b++) {
+            var e = listOfEdges_1[_b];
             var n = e.to;
-            if (closedSet.indexOf(n) == -1) {
-                var tentative_gScore = gScore[current.toString()] + e.cost;
-                if (openSet.indexOf(n) == -1) {
-                    openSet.push(n);
-                    fScore[n.toString()] = Infinity;
-                    gScore[n.toString()] = Infinity;
+            if (!closedSet.contains(n)) {
+                var tentative_gScore = gScore.getValue(current) + e.cost;
+                if (!openSet.contains(n)) {
+                    openSet.add(n);
+                    fScore.setValue(n, Infinity);
+                    gScore.setValue(n, Infinity);
                 }
-                else if (tentative_gScore < gScore[n.toString()]) {
-                    cameFrom[n.toString()] = current;
-                    gScore[n.toString()] = tentative_gScore;
-                    fScore[n.toString()] = gScore[n.toString()] + heuristics(n);
+                else if (tentative_gScore < gScore.getValue(n)) {
+                    cameFrom.setValue(n, current);
+                    gScore.setValue(n, tentative_gScore);
+                    fScore.setValue(n, gScore.getValue(n) + heuristics(n));
                 }
             }
         }
@@ -59,10 +60,10 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
     return null;
 }
 function reconstruct_path(cameFrom, current) {
-    if (cameFrom === void 0) { cameFrom = new Map(); }
     var total_path = [current];
-    while (cameFrom.get(current) != null) {
-        current = cameFrom.get(current);
+    var total_cost = 0;
+    while (cameFrom.getValue(current) != null) {
+        current = cameFrom.getValue(current);
         total_path.push(current);
     }
     return total_path;

@@ -2509,6 +2509,8 @@ var collections;
 })(collections || (collections = {})); // End of module
 ///<reference path="lib/collections.ts"/>
 ///<reference path="lib/node.d.ts"/>
+//import * as es6 from "node_modules/es6-collections/es6-collections.js";
+//import { Map } from "node_modules/es6-collections"
 /** Graph module
 *
 *  Types for generic A\* implementation.
@@ -2549,60 +2551,76 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
         path: [start],
         cost: 0
     };
-    var closedSet;
-    var openSet = [start];
-    var cameFrom = new Map();
-    var gScore = new Map();
-    var fScore = new Map();
-    fScore.set(start, heuristics(start));
-    gScore.set(start, 0);
-    while (openSet.length != 0) {
+    //gScore("apa") = 3
+    var closedSet = new collections.Set();
+    var openSet = new collections.Set();
+    var cameFrom = new collections.Dictionary();
+    var gScore = new collections.Dictionary();
+    var fScore = new collections.Dictionary();
+    openSet.add(start);
+    //let cameFrom : Map<Node, Node> = new Map<Node, Node>();
+    //let gScore : Map<Node, number> = new Map<Node, number>();
+    //let fScore : Map<Node, number> = new Map<Node, number>();
+    fScore.setValue(start, heuristics(start));
+    gScore.setValue(start, 0);
+    //fScore.set(start, heuristics(start));
+    //gScore.set(start, 0);
+    while (openSet.size() != 0) {
         //Init variables
         var lowF = Infinity;
         var current = null;
         //Finding "current" by taking node in openSet with lowest fScore.
         //Null otherwise
-        for (var _i = 0, openSet_1 = openSet; _i < openSet_1.length; _i++) {
-            var n = openSet_1[_i];
+        for (var _i = 0, _a = openSet.toArray(); _i < _a.length; _i++) {
+            var n = _a[_i];
             //Needs to check for null
-            if (fScore.get(n) < lowF) {
-                lowF = gScore.get(n);
+            if (fScore.getValue(n) < lowF) {
+                lowF = gScore.getValue(n);
                 current = n;
             }
         }
         if (goal(current)) {
+            var result_1 = new SearchResult();
+            result_1.path = reconstruct_path(cameFrom, current);
+            result_1.cost = gScore.getValue(current);
         }
         //remove current from openSet
-        var index = openSet.indexOf(current);
-        if (index > -1) {
-            openSet.splice(index, 1);
-        }
+        openSet.remove(current);
         //add to current set
-        closedSet.push(current);
+        closedSet.add(current);
         //Find all neighbours to current
         var listOfEdges = graph.outgoingEdges(current);
-        for (var _a = 0, listOfEdges_1 = listOfEdges; _a < listOfEdges_1.length; _a++) {
-            var e = listOfEdges_1[_a];
+        for (var _b = 0, listOfEdges_1 = listOfEdges; _b < listOfEdges_1.length; _b++) {
+            var e = listOfEdges_1[_b];
             var n = e.to;
-            if (closedSet.indexOf(n) == -1) {
-                var tentative_gScore = gScore.get(current) + e.cost;
+            if (!closedSet.contains(n)) {
+                var tentative_gScore = gScore.getValue(current) + e.cost;
                 //We find a new node
-                if (openSet.indexOf(n) == -1) {
-                    openSet.push(n);
+                if (!openSet.contains(n)) {
+                    openSet.add(n);
                     //Completly new nodes get g and f score of inf.
-                    fScore.set(n, Infinity);
-                    gScore.set(n, Infinity);
+                    fScore.setValue(n, Infinity);
+                    gScore.setValue(n, Infinity);
                 }
-                else if (tentative_gScore < gScore.get(n)) {
+                else if (tentative_gScore < gScore.getValue(n)) {
                     //We rediscovered a node and the new path is better
-                    cameFrom.set(n, current);
-                    gScore.set(n, tentative_gScore);
-                    fScore.set(n, gScore.get(n) + heuristics(n));
+                    cameFrom.setValue(n, current);
+                    gScore.setValue(n, tentative_gScore);
+                    fScore.setValue(n, gScore.getValue(n) + heuristics(n));
                 }
             }
         }
     }
     return null;
+}
+function reconstruct_path(cameFrom, current) {
+    var total_path = [current];
+    var total_cost = 0;
+    while (cameFrom.getValue(current) != null) {
+        current = cameFrom.getValue(current);
+        total_path.push(current);
+    }
+    return total_path;
 }
 var GridNode = (function () {
     function GridNode(pos) {
