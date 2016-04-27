@@ -2580,6 +2580,7 @@ function aStarSearch(graph, start, goal, heuristics, timeout) {
             }
         }
         if (goal(current)) {
+            console.log("GOAL == CURRENT");
             var result_1 = new SearchResult();
             result_1.path = reconstruct_path(cameFrom, current);
             result_1.cost = gScore.getValue(current);

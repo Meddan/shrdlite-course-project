@@ -91,6 +91,7 @@ function aStarSearch<Node>
             }
         }
         if (goal(current)){
+          console.log("GOAL == CURRENT")
           let result = new SearchResult<Node>();
           result.path = reconstruct_path(cameFrom, current);
           result.cost = gScore.getValue(current);
@@ -122,6 +123,16 @@ function aStarSearch<Node>
     }
     return null;
 
+}
+function lookup<Node>(
+  dic : collections.Dictionary<Node,number>,
+  target : Node
+){
+  if(dic.containsKey(target)){
+    return dic.getValue(target);
+  } else {
+    return Infinity;
+  }
 }
 
 function reconstruct_path<Node>
