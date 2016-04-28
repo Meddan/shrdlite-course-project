@@ -62,6 +62,7 @@ function aStarSearch<Node>
         path: [start],
         cost: 0
     };
+    let startTime = new Date().getTime();
     let closedSet : collections.Set<Node> = new collections.Set<Node>();
     let openSet : collections.Set<Node> = new collections.Set<Node>();
     let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>();
@@ -110,6 +111,10 @@ function aStarSearch<Node>
           gScore.setValue(n, tentative_gScore);
           fScore.setValue(n, gScore.getValue(n) + heuristics(n));
         }
+        let endTime = new Date().getTime();
+        if(endTime - startTime >= 1000*timeout){
+          break;
+        }
     }
     return null;
 
@@ -139,5 +144,3 @@ function reconstruct_path<Node>
   }
   return total_path;
 }
-
-
