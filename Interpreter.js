@@ -87,8 +87,7 @@ var Interpreter;
                 for (var _b = 0, tempdefs_1 = tempdefs; _b < tempdefs_1.length; _b++) {
                     var u = tempdefs_1[_b];
                     if (u.color != color) {
-                        var index = tempdefs.indexOf(u);
-                        tempdefs.splice(index, 1);
+                        removeFromArray(tempdefs, u);
                     }
                 }
             }
@@ -96,8 +95,7 @@ var Interpreter;
                 for (var _c = 0, tempdefs_2 = tempdefs; _c < tempdefs_2.length; _c++) {
                     var u = tempdefs_2[_c];
                     if (u.size != size) {
-                        var index = tempdefs.indexOf(u);
-                        tempdefs.splice(index, 1);
+                        removeFromArray(tempdefs, u);
                     }
                 }
             }
@@ -111,5 +109,9 @@ var Interpreter;
         else {
         }
         return null;
+    }
+    function removeFromArray(arr, toBeRemoved) {
+        var index = arr.indexOf(toBeRemoved);
+        arr.splice(index, 1);
     }
 })(Interpreter || (Interpreter = {}));

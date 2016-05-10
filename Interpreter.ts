@@ -170,8 +170,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         if(color != null){
           for (var u of tempdefs){
             if(u.color != color){
-              var index = tempdefs.indexOf(u);
-              tempdefs.splice(index, 1);
+              removeFromArray(tempdefs,u);
             }
           }
         }
@@ -179,8 +178,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         if(size != null){
           for (var u of tempdefs){
             if(u.size != size){
-              var index = tempdefs.indexOf(u);
-              tempdefs.splice(index, 1);
+              removeFromArray(tempdefs,u);
             }
           }
         }
@@ -196,6 +194,11 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       }
 
       return null;
+    }
+
+    function removeFromArray<T>(arr : T[], toBeRemoved : T) {
+      var index = arr.indexOf(toBeRemoved);
+      arr.splice(index,1);
     }
 
 }
