@@ -153,7 +153,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       if(size != null && color != null){
           //We have color, size and form
           for(var s of objects){
-            var a = state.objects(s);
+            var a = state.objects[s];
+            if (a.form == form && a.size == size && a.color == color){
+              return true;
+            }
           }
       }
       return false;
