@@ -67,13 +67,49 @@ var Interpreter;
         var color = obj.color;
         var size = obj.size;
         var form = obj.form;
-        var objects = Array.prototype.concat.apply([], state.stacks);
-        if (size != null && color != null) {
-            for (var _i = 0, objects_1 = objects; _i < objects_1.length; _i++) {
-                var s = objects_1[_i];
-                var a = state.objects(s);
+        var object = obj.object;
+        var location = obj.location;
+        var keys = Array.prototype.concat.apply([], state.stacks);
+        var objdefs = new Array();
+        for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+            var s = keys_1[_i];
+            objdefs.push(state.objects[s]);
+        }
+        if (object == null) {
+            var tempdefs = new Array();
+            for (var _a = 0, objdefs_1 = objdefs; _a < objdefs_1.length; _a++) {
+                var o = objdefs_1[_a];
+                if (o.form == form) {
+                    tempdefs.push(o);
+                }
+            }
+            if (color != null) {
+                for (var _b = 0, tempdefs_1 = tempdefs; _b < tempdefs_1.length; _b++) {
+                    var u = tempdefs_1[_b];
+                    if (u.color != color) {
+                        var index = tempdefs.indexOf(u);
+                        tempdefs.splice(index, 1);
+                    }
+                }
+            }
+            if (size != null) {
+                for (var _c = 0, tempdefs_2 = tempdefs; _c < tempdefs_2.length; _c++) {
+                    var u = tempdefs_2[_c];
+                    if (u.size != size) {
+                        var index = tempdefs.indexOf(u);
+                        tempdefs.splice(index, 1);
+                    }
+                }
+            }
+            if (tempdefs.length == 1) {
+                return keys[objdefs.indexOf(tempdefs[0])];
+            }
+            else {
+                return null;
             }
         }
-        return false;
+        else {
+        }
+        return null;
     }
 })(Interpreter || (Interpreter = {}));

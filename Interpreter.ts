@@ -145,21 +145,57 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       }
       return null;
     }
-    function findObj(obj : Parser.Object, state : WorldState) : boolean {
+    function findObj(obj : Parser.Object, state : WorldState) : string {
       var color = obj.color;
       var size  = obj.size;
       var form  = obj.form;
-      var objects : string[] = Array.prototype.concat.apply([], state.stacks);
-      if(size != null && color != null){
-          //We have color, size and form
-          for(var s of objects){
-            var a = state.objects[s];
-            if (a.form == form && a.size == size && a.color == color){
-              return true;
+      var object = obj.object;
+      var location = obj.location;
+      var keys : string[] = Array.prototype.concat.apply([], state.stacks);
+      var objdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
+      for(var s of keys){
+        objdefs.push(state.objects[s]);
+      }
+
+      if (object == null){
+        //We have obj = {size?,color?,form}
+        var tempdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
+        //take all of the same form
+        for(var o of objdefs){
+          if (o.form == form){
+            tempdefs.push(o);
+          }
+        }
+        //remove all objects that do not have the correct color
+        if(color != null){
+          for (var u of tempdefs){
+            if(u.color != color){
+              var index = tempdefs.indexOf(u);
+              tempdefs.splice(index, 1);
             }
           }
+        }
+        //remove all objects of the wrong size
+        if(size != null){
+          for (var u of tempdefs){
+            if(u.size != size){
+              var index = tempdefs.indexOf(u);
+              tempdefs.splice(index, 1);
+            }
+          }
+        }
+        //If we have 1 unique object we return it, otherwise we have ambiguity
+        if(tempdefs.length == 1){
+          return keys[objdefs.indexOf(tempdefs[0])];
+        } else {
+          //Either we found no matching objects, or more than one.
+          return null;
+        }
+      } else {
+
       }
-      return false;
+
+      return null;
     }
 
 }
