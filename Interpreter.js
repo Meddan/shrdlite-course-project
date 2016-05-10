@@ -47,21 +47,7 @@ var Interpreter;
         return interpretation;
     }
     function interpretObject(obj, state) {
-        if (obj.object == null) {
-            var color = obj.color;
-            var size = obj.size;
-            var form = obj.form;
-            if (size != null && color != null) {
-                var objdef;
-                objdef.form = form;
-                objdef.size = size;
-                obj;
-                state.objects;
-            }
-        }
-        else {
-        }
-        return null;
+        findObj(obj);
     }
     function findObj(obj, state) {
         var color = obj.color;
@@ -99,12 +85,12 @@ var Interpreter;
                     }
                 }
             }
-            if (tempdefs.length == 1) {
-                return keys[objdefs.indexOf(tempdefs[0])];
+            var ans = new Array();
+            for (var _d = 0, tempdefs_3 = tempdefs; _d < tempdefs_3.length; _d++) {
+                var d = tempdefs_3[_d];
+                ans.push(keys[objdefs.indexOf(d)]);
             }
-            else {
-                return null;
-            }
+            return ans;
         }
         else {
         }

@@ -101,9 +101,12 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      * connected to `cmd`, but your version of the function should
      * analyse cmd in order to figure out what interpretation to
      * return.
-     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command` (as it has been parsed by the parser).
+     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command`
+     * (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
-     * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
+     * @returns A list of list of Literal, representing a formula in disjunctive normal form
+     * (disjunction of conjunctions). See the dummy interpetation returned in the code for an example,
+     * which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
@@ -126,26 +129,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         ]];
         return interpretation;
     }
-    function interpretObject( obj : Parser.Object, state : WorldState) : DNFFormula {
-      if(obj.object == null){
-        //We have object = {size? color? form}
-        var color = obj.color;
-        var size  = obj.size;
-        var form  = obj.form;
-        if(size != null && color != null){
-            //We have color, size and form
-            var objdef : ObjectDefinition;
-            objdef.form = form;
-            objdef.size = size;
-            obj
-            state.objects
-        }
-      } else {
-
-      }
-      return null;
+    function interpretObject( obj : Parser.Object, state : WorldState) : DNFFormula{
+      findObj(obj)
     }
-    function findObj(obj : Parser.Object, state : WorldState) : string {
+    function findObj(obj : Parser.Object, state : WorldState) : string[] {
       var color = obj.color;
       var size  = obj.size;
       var form  = obj.form;
@@ -182,14 +169,14 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             }
           }
         }
-        //If we have 1 unique object we return it, otherwise we have ambiguity
-        if(tempdefs.length == 1){
-          return keys[objdefs.indexOf(tempdefs[0])];
-        } else {
-          //Either we found no matching objects, or more than one.
-          return null;
+        //return list of all matching objects.
+        var ans : string[] = new Array<string>();
+        for(var d of tempdefs){
+          ans.push(keys[objdefs.indexOf(d)])
         }
+        return ans;
       } else {
+        //obj = {Object Location}
 
       }
 
