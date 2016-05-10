@@ -134,12 +134,29 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var form  = obj.form;
         if(size != null && color != null){
             //We have color, size and form
+            var objdef : ObjectDefinition;
+            objdef.form = form;
+            objdef.size = size;
+            obj
             state.objects
         }
       } else {
 
       }
       return null;
+    }
+    function findObj(obj : Parser.Object, state : WorldState) : boolean {
+      var color = obj.color;
+      var size  = obj.size;
+      var form  = obj.form;
+      var objects : string[] = Array.prototype.concat.apply([], state.stacks);
+      if(size != null && color != null){
+          //We have color, size and form
+          for(var s of objects){
+            var a = state.objects(s);
+          }
+      }
+      return false;
     }
 
 }

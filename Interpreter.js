@@ -52,11 +52,28 @@ var Interpreter;
             var size = obj.size;
             var form = obj.form;
             if (size != null && color != null) {
+                var objdef;
+                objdef.form = form;
+                objdef.size = size;
+                obj;
                 state.objects;
             }
         }
         else {
         }
         return null;
+    }
+    function findObj(obj, state) {
+        var color = obj.color;
+        var size = obj.size;
+        var form = obj.form;
+        var objects = Array.prototype.concat.apply([], state.stacks);
+        if (size != null && color != null) {
+            for (var _i = 0, objects_1 = objects; _i < objects_1.length; _i++) {
+                var s = objects_1[_i];
+                var a = state.objects(s);
+            }
+        }
+        return false;
     }
 })(Interpreter || (Interpreter = {}));
