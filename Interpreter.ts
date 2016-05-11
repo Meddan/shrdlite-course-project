@@ -261,6 +261,33 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         }
 
       } else if (loc.relation == "beside") {
+        // Go through all entities we have found
+        for(var i = 0; i < relationEntities.length; i++){
+          var currentEntity : string = relationEntities[i];
+
+          // Get stacks that contain entity
+          var eStacks = findStacks(currentEntity,wStacks);
+
+          for(var j = 0; j < eStacks.length; j++){
+            // Find index of stack in the world
+            var indexOfStack = wStacks.indexOf(eStacks[j]);
+            var toLeft = indexOfStack - 1;
+            var toRight = indexOfStack + 1;
+
+            // If stack to left is not out of bounds
+            if(toLeft >= 0){
+              // Add to array
+              matchingEntities.concat(wStacks[toLeft]);
+            }
+
+            // If stack to right is not out of bounds
+            if(toRight <= wStacks.length){
+              // Add to array
+              matchingEntities.concat(wStacks[toRight]);
+            }
+          }
+        }
+
 
       } else if (loc.relation == "leftof") {
         // Go through all entities we have found
