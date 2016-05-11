@@ -33,6 +33,7 @@ var Interpreter;
     Interpreter.stringifyLiteral = stringifyLiteral;
     function interpretCommand(cmd, state) {
         console.log("New command!");
+        console.log(cmd);
         var cmdverb = cmd.command;
         var cmdent = cmd.entity;
         var cmdloc = cmd.location;
@@ -41,7 +42,17 @@ var Interpreter;
         possibleObj = interpretEntity(cmdent, state);
         if (cmdverb != "take") {
             console.log("NOT TAKE");
+<<<<<<< 0a15ec73ee8d7100259c76506199bc0af138f6fc
             relationObj = interpretLocation(cmdloc, state);
+=======
+            if (cmdloc.entity.object.form != "floor") {
+                relationObj = interpretLocation(cmdloc, state);
+            }
+            else {
+                relationObj = ["floor"];
+            }
+            console.log(relationObj.length);
+>>>>>>> here you go dover.
             if (possibleObj.length < 1) {
                 console.log("NO POSSIBLE OBJECT");
                 throw new Error("No possible object!");
@@ -51,11 +62,15 @@ var Interpreter;
                 throw new Error("No possible location!");
             }
             console.log("PASSED SANITY");
+            for (var _i = 0, relationObj_1 = relationObj; _i < relationObj_1.length; _i++) {
+                var x = relationObj_1[_i];
+                console.log(x);
+            }
             var interpretation = [[]];
-            for (var _i = 0, possibleObj_1 = possibleObj; _i < possibleObj_1.length; _i++) {
-                var s = possibleObj_1[_i];
-                for (var _a = 0, relationObj_1 = relationObj; _a < relationObj_1.length; _a++) {
-                    var l = relationObj_1[_a];
+            for (var _a = 0, possibleObj_1 = possibleObj; _a < possibleObj_1.length; _a++) {
+                var s = possibleObj_1[_a];
+                for (var _b = 0, relationObj_2 = relationObj; _b < relationObj_2.length; _b++) {
+                    var l = relationObj_2[_b];
                     interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
                 }
             }
@@ -67,8 +82,8 @@ var Interpreter;
                 throw new Error("No possible object!");
             }
             var interpretation = [[]];
-            for (var _b = 0, possibleObj_2 = possibleObj; _b < possibleObj_2.length; _b++) {
-                var s = possibleObj_2[_b];
+            for (var _c = 0, possibleObj_2 = possibleObj; _c < possibleObj_2.length; _c++) {
+                var s = possibleObj_2[_c];
                 interpretation.push([{ polarity: true, relation: "holding", args: [s] }]);
             }
             return interpretation;
@@ -105,11 +120,20 @@ var Interpreter;
         else if (loc.relation == "ontop") {
             for (var i = 0; i < relationEntities.length; i++) {
                 var currentEntity = relationEntities[i];
-                var eStacks = findStacks(currentEntity, wStacks);
-                for (var j = 0; j < eStacks.length; j++) {
-                    if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
-                        var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
-                        matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+                if (currentEntity != "floor") {
+                    var eStacks = findStacks(currentEntity, wStacks);
+                    for (var j = 0; j < eStacks.length; j++) {
+                        if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
+                            var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                            matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+                        }
+                    }
+                }
+                else {
+                    for (var j = 0; j < wStacks.length; j++) {
+                        if (wStacks[j].length != 0) {
+                            matchingEntities.push(wStacks[j][0]);
+                        }
                     }
                 }
             }
@@ -185,7 +209,6 @@ var Interpreter;
             console.log("Unknown relation");
             return null;
         }
-        console.log("RETURNING");
         return matchingEntities;
     }
     function findStacks(ent, stacks) {
@@ -210,6 +233,13 @@ var Interpreter;
             objdefs.push(state.objects[s]);
         }
         if (objobj == null) {
+<<<<<<< 0a15ec73ee8d7100259c76506199bc0af138f6fc
+=======
+            if (objform == "floor") {
+                console.log("floor");
+                return ["floor"];
+            }
+>>>>>>> here you go dover.
             var tempdefs = new Array();
             for (var _a = 0, objdefs_1 = objdefs; _a < objdefs_1.length; _a++) {
                 var o = objdefs_1[_a];

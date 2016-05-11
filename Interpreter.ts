@@ -111,6 +111,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
         console.log("New command!")
+        console.log(cmd)
         var cmdverb : string = cmd.command;
         var cmdent : Parser.Entity = cmd.entity;
         var cmdloc : Parser.Location = cmd.location;
@@ -122,10 +123,13 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
         if(cmdverb != "take"){
           console.log("NOT TAKE");
-          console.log("location:");
-          console.log(cmdloc.relation);
-          //Gets all the objects we want to have a relation to.
-          relationObj = interpretLocation(cmdloc, state);
+          //Gets all the objects we want to have a relation to
+          if(cmdloc.entity.object.form != "floor"){
+            relationObj = interpretLocation(cmdloc, state);
+          } else {
+            relationObj = ["floor"]
+          }
+          console.log(relationObj.length)
           //Sanity checks
           if(possibleObj.length < 1){
             console.log("NO POSSIBLE OBJECT")
@@ -135,6 +139,9 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             throw new Error("No possible location!")
           }
           console.log("PASSED SANITY")
+          for(var x of relationObj){
+            console.log(x);
+          }
 
           var interpretation : DNFFormula = [[]];
           for (var s of possibleObj){
@@ -363,7 +370,6 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         console.log("Unknown relation");
         return null;
       }
-      console.log("RETURNING")
       return matchingEntities;
     }
 
@@ -396,7 +402,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
       if (objobj == null){
         if(objform == "floor"){
-          console.log("FLOOR")
+          console.log("floor");
           return ["floor"];
         }
         //We have obj = {size?,color?,form}
