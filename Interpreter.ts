@@ -182,7 +182,26 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
         }
       } else if (loc.relation == "ontop") {
+          // Go through all entities we have found
+          for(var i = 0; i < relationEntities.length; i++){
+            var currentEntity : string = relationEntities[i];
 
+            // Get stacks that contain entity
+            var eStacks = findStacks(currentEntity, wStacks);
+
+            // Go through all stacks entity is in
+            for(var j = 0; j < eStacks.length; j++){
+              // Check that it is not top of the stack
+              if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
+
+                // Find object directly ontop
+                var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+
+                // Push the object on top to array
+                matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+              }
+            }
+          }
       } else if (loc.relation == "inside") {
 
       } else if (loc.relation == "under") {

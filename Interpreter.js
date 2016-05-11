@@ -77,6 +77,16 @@ var Interpreter;
             }
         }
         else if (loc.relation == "ontop") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
+                        var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                        matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+                    }
+                }
+            }
         }
         else if (loc.relation == "inside") {
         }
