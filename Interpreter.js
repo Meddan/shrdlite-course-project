@@ -94,7 +94,6 @@ var Interpreter;
             }
         }
         else if (loc.relation == "ontop") {
-<<<<<<< ff508219f06c92f830a0f0799ab90d76d0619799
             for (var i = 0; i < relationEntities.length; i++) {
                 var currentEntity = relationEntities[i];
                 var eStacks = findStacks(currentEntity, wStacks);
@@ -105,8 +104,6 @@ var Interpreter;
                     }
                 }
             }
-=======
->>>>>>> Interpret command.
         }
         else if (loc.relation == "inside") {
         }
