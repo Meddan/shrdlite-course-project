@@ -114,6 +114,13 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var cmdent : Parser.Entity = cmd.entity;
         var cmdloc : Parser.Location = cmd.location;
 
+        var possibleObj : string[];
+        var possibleSubj : string[];
+
+        possibleObj = interpretEntity(cmdent, state);
+        possibleSubj = interpretLoc(cmdloc, state);
+
+
         //Verify cmdent
         //Get entity object
         var entobj : Parser.Object = cmdent.object
@@ -129,6 +136,26 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         ]];
         return interpretation;
     }
+    //This is probably what interpretCommand should do...
+    // I WORK FROM HERE....
+    function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
+        interpretObjects(ent.object, state)
+    }
+
+    function interpretObjects(cmdobj : Parser.Object, state : WorldState) : string[] {
+         cmdobj : Parser.Object  = cmdent.object;
+         
+         col = cmdobj.co
+         for (var stack in state.stacks){
+           for (var string in stack) {
+
+           }
+         }
+    } 
+
+    // ...TO HERE
+
+
     function interpretObject( obj : Parser.Object, state : WorldState) : DNFFormula{
       findObj(obj)
     }
