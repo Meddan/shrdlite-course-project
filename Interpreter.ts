@@ -284,7 +284,25 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         }
 
       } else if (loc.relation == "rightof") {
+        // Go through all entities we have found
+        for(var i = 0; i < relationEntities.length; i++){
+          var currentEntity : string = relationEntities[i];
 
+          // Get stacks that contain entity
+          var eStacks = findStacks(currentEntity, wStacks);
+
+          //Go through all stacks entity is in
+          for(var j = 0; j < eStacks.length; j++){
+            // Find where the stack is in the world
+            var indexOfStack = wStacks.indexOf(eStacks[j]);
+
+            // For all stacks to the right (or after) the current stack
+            for(var k = indexOfStack+1; k < wStacks.length; k++){
+              // Add that stack to array
+              matchingEntities.concat(wStacks[k]);
+            }
+          }
+        }
       } else {
         console.log("Unknown relation");
         return null;
