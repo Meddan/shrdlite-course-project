@@ -94,12 +94,19 @@ var Interpreter;
         }
         else {
             var subjectStrings = findObj(object, state);
-            var subject = new Array();
+            var subjects = new Array();
             for (var _e = 0, subjectStrings_1 = subjectStrings; _e < subjectStrings_1.length; _e++) {
                 var s = subjectStrings_1[_e];
-                subject.push(state.objects[s]);
+                subjects.push(state.objects[s]);
             }
-            location.relation;
+            var objectStrings = findObj(location.entity.object, state);
+            var objects = new Array();
+            for (var _f = 0, objectStrings_1 = objectStrings; _f < objectStrings_1.length; _f++) {
+                var s = objectStrings_1[_f];
+                objects.push(state.objects[s]);
+            }
+            if (location.relation == "above") {
+            }
         }
         return null;
     }

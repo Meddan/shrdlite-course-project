@@ -178,19 +178,25 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       } else {
         //obj = {Object Location}
 
-        //Objects that match the first (subjekt)
+        //Objects that match the first (subject)
         var subjectStrings = findObj(object, state);
-        var subject : ObjectDefinition[] = new Array<ObjectDefinition>();
+        var subjects : ObjectDefinition[] = new Array<ObjectDefinition>();
         for(var s of subjectStrings){
-          subject.push(state.objects[s]);
+          subjects.push(state.objects[s]);
         }
 
-        //findObj(object)
-        //Object that match the second (objekt)
-        //findObj(location.entity.object)
+        //Objects that match the second (object)
+        var objectStrings = findObj(location.entity.object, state);
+        var objects : ObjectDefinition[] = new Array<ObjectDefinition>();
+        for(var s of objectStrings){
+          objects.push(state.objects[s]);
+        }
 
-        // För alla subjekt, kolla vilka som matchar med vilka objekt
-        location.relation
+        // For each subject, check which pairing of object that is
+
+        if(location.relation=="above"){
+          //foreach
+        }
         //returna listan
       }
 
