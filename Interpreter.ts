@@ -122,6 +122,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
         if(cmdverb != "take"){
           console.log("NOT TAKE");
+          console.log("location:");
+          console.log(cmdloc.relation);
           //Gets all the objects we want to have a relation to.
           relationObj = interpretLocation(cmdloc, state);
           //Sanity checks
@@ -210,19 +212,31 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           for(var i = 0; i < relationEntities.length; i++){
             var currentEntity : string = relationEntities[i];
 
-            // Get stacks that contain entity
-            var eStacks = findStacks(currentEntity, wStacks);
+            // If we dont want something on top of the floor
+            if(currentEntity != "floor"){
+              // Get stacks that contain entity
+              var eStacks = findStacks(currentEntity, wStacks);
 
-            // Go through all stacks entity is in
-            for(var j = 0; j < eStacks.length; j++){
-              // Check that it is not top of the stack
-              if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
+              // Go through all stacks entity is in
+              for(var j = 0; j < eStacks.length; j++){
+                // Check that it is not top of the stack
+                if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
 
                 // Find object directly ontop
                 var objIndex = eStacks[j].indexOf(currentEntity) + 1;
 
                 // Push the object on top to array
                 matchingEntities.push(eStacks[j][objIndex]);
+                }
+              }
+            } else { // If we do want something on top of the floor
+              // For all stacks
+              for(var j = 0; j < wStacks.length; j++){
+                // If it is non empty
+                if(wStacks[j].length != 0){
+                  // Take the first entity in it, as it is on top of the floor
+                  matchingEntities.push(wStacks[j][0]);
+                }
               }
             }
           }
@@ -381,6 +395,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       }
 
       if (objobj == null){
+        if(objform == "floor"){
+          console.log("FLOOR")
+          return ["floor"];
+        }
         //We have obj = {size?,color?,form}
         var tempdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
         //take all of the same form
