@@ -208,10 +208,9 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         //Objects that match the second (object)
         var objectStrings : string[]= interpretLocation(objloc, state);
 
-        //UNION BETWEEN SUBJ AND OBJ
+        //Intersection between objects that match the description
+        //and objects that are at the correct location
         return intersect_arrays(subjectStrings, objectStrings);
-
-        //returna listan
       }
     }
     function removeFromArray<T>(arr : T[], toBeRemoved : T) {
