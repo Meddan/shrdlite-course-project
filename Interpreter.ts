@@ -239,13 +239,15 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
               // Check that currentEntity isn't at bottom
               if (eStacks[j].indexOf(currentEntity) != 0) {
-                var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
+
+                var objectUnderIndex = eStacks[j].indexOf(currentEntity) - 1;
+                var obj = eStacks[j][objectUnderIndex];
 
                 // Check that box is under currentEntity
-                if (state.objects[objectUnder].form == "box") {
+                if (state.objects[obj].form == "box") {
 
                   // Add the inside object to array
-                  matchingEntities.concat(eStacks[j].slice(objectUnder+1,objectUnder+2));
+                  matchingEntities.concat(eStacks[j][objectUnderIndex+1]);
                 }
               }
             }
