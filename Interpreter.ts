@@ -181,8 +181,23 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           }
 
         }
+      } else if (loc.relation == "ontop") {
+
+      } else if (loc.relation == "inside") {
+
+      } else if (loc.relation == "under") {
+
+      } else if (loc.relation == "beside") {
+
+      } else if (loc.relation == "leftof") {
+
+      } else if (loc.relation == "rightof") {
+
+      } else {
+        console.log("Unknown relation");
+        return null;
       }
-      return null;
+      return matchingEntities;
     }
 
     // Find and return all stacks that contain provided entity
