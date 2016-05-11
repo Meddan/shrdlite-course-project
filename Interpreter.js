@@ -61,8 +61,9 @@ var Interpreter;
     }
     function interpretLocation(loc, state) {
         var relationEnteties = interpretEntity(loc.entity, state);
-        if ()
-            return null;
+        if (loc.relation == "above") {
+        }
+        return null;
     }
     function interpretObject(obj, state) {
         var objcolor = obj.color;
@@ -76,26 +77,26 @@ var Interpreter;
             var s = keys_1[_i];
             objdefs.push(state.objects[s]);
         }
-        if (object == null) {
+        if (objobj == null) {
             var tempdefs = new Array();
             for (var _a = 0, objdefs_1 = objdefs; _a < objdefs_1.length; _a++) {
                 var o = objdefs_1[_a];
-                if (o.form == form) {
+                if (o.form == objform) {
                     tempdefs.push(o);
                 }
             }
-            if (color != null) {
+            if (objcolor != null) {
                 for (var _b = 0, tempdefs_1 = tempdefs; _b < tempdefs_1.length; _b++) {
                     var u = tempdefs_1[_b];
-                    if (u.color != color) {
+                    if (u.color != objcolor) {
                         removeFromArray(tempdefs, u);
                     }
                 }
             }
-            if (size != null) {
+            if (objsize != null) {
                 for (var _c = 0, tempdefs_2 = tempdefs; _c < tempdefs_2.length; _c++) {
                     var u = tempdefs_2[_c];
-                    if (u.size != size) {
+                    if (u.size != objsize) {
                         removeFromArray(tempdefs, u);
                     }
                 }
@@ -108,10 +109,8 @@ var Interpreter;
             return ans;
         }
         else {
-            var subjectStrings = interpretObject(object, state);
-            var objectStrings = interpretLocation(location, state);
-            if (location.relation == "above") {
-            }
+            var subjectStrings = interpretObject(objobj, state);
+            var objectStrings = interpretLocation(objloc, state);
         }
         return null;
     }

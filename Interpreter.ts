@@ -149,7 +149,9 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
       var relationEnteties : string[] = interpretEntity(loc.entity, state);
-      if()
+      if(loc.relation == "above"){
+        
+      }
       return null;
     }
 
@@ -165,27 +167,27 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         objdefs.push(state.objects[s]);
       }
 
-      if (object == null){
+      if (objobj == null){
         //We have obj = {size?,color?,form}
         var tempdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
         //take all of the same form
         for(var o of objdefs){
-          if (o.form == form){
+          if (o.form == objform){
             tempdefs.push(o);
           }
         }
         //remove all objects that do not have the correct color
-        if(color != null){
+        if(objcolor != null){
           for (var u of tempdefs){
-            if(u.color != color){
+            if(u.color != objcolor){
               removeFromArray(tempdefs,u);
             }
           }
         }
         //remove all objects of the wrong size
-        if(size != null){
+        if(objsize != null){
           for (var u of tempdefs){
-            if(u.size != size){
+            if(u.size != objsize){
               removeFromArray(tempdefs,u);
             }
           }
@@ -200,17 +202,14 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         //obj = {Object Location}
 
         //Objects that match the first (subject)
-        var subjectStrings = interpretObject(object, state);
+        var subjectStrings = interpretObject(objobj, state);
 
 
         //Objects that match the second (object)
-        var objectStrings = interpretLocation(location, state);
+        var objectStrings = interpretLocation(objloc, state);
 
-        // For each subject, check which pairing of object that is
+        //UNION BETWEEN SUBJ AND OBJ
 
-        if(location.relation=="above"){
-          //foreach
-        }
         //returna listan
       }
 
