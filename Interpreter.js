@@ -32,28 +32,34 @@ var Interpreter;
     }
     Interpreter.stringifyLiteral = stringifyLiteral;
     function interpretCommand(cmd, state) {
+        console.log("New command!");
         var cmdverb = cmd.command;
         var cmdent = cmd.entity;
         var cmdloc = cmd.location;
         var possibleObj;
-        var possibleLoc;
+        var relationObj;
         possibleObj = interpretEntity(cmdent, state);
         if (cmdverb != "take") {
-            possibleLoc = interpretLocation(cmdloc, state);
+            console.log("NOT TAKE");
+            relationObj = interpretLocation(cmdloc, state);
             if (possibleObj.length < 1) {
+                console.log("NO POSSIBLE OBJECT");
                 throw new Error("No possible object!");
             }
-            else if (possibleLoc.length < 1) {
+            else if (relationObj.length < 1) {
+                console.log("NO POSSIBLE LOCATION");
                 throw new Error("No possible location!");
             }
+            console.log("PASSED SANITY");
             var interpretation = [[]];
             for (var _i = 0, possibleObj_1 = possibleObj; _i < possibleObj_1.length; _i++) {
                 var s = possibleObj_1[_i];
-                for (var _a = 0, possibleLoc_1 = possibleLoc; _a < possibleLoc_1.length; _a++) {
-                    var l = possibleLoc_1[_a];
+                for (var _a = 0, relationObj_1 = relationObj; _a < relationObj_1.length; _a++) {
+                    var l = relationObj_1[_a];
                     interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
                 }
             }
+            console.log(interpretation.toString);
             return interpretation;
         }
         else {
@@ -78,9 +84,11 @@ var Interpreter;
         }
     }
     function interpretLocation(loc, state) {
+        console.log("intloc");
         var relationEntities = interpretEntity(loc.entity, state);
         var wStacks = state.stacks;
         var matchingEntities = [];
+        console.log(loc.relation);
         if (loc.relation == "above") {
             for (var i = 0; i < relationEntities.length; i++) {
                 var currentEntity = relationEntities[i];
@@ -121,17 +129,63 @@ var Interpreter;
             }
         }
         else if (loc.relation == "under") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    if (eStacks[j].indexOf(currentEntity) != 0) {
+                        var underEntity = eStacks[j].slice(0, eStacks[j].indexOf(currentEntity));
+                        matchingEntities.concat(underEntity);
+                    }
+                }
+            }
         }
         else if (loc.relation == "beside") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    var toLeft = indexOfStack - 1;
+                    var toRight = indexOfStack + 1;
+                    if (toLeft >= 0) {
+                        matchingEntities.concat(wStacks[toLeft]);
+                    }
+                    if (toRight <= wStacks.length) {
+                        matchingEntities.concat(wStacks[toRight]);
+                    }
+                }
+            }
         }
         else if (loc.relation == "leftof") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    for (var k = 0; k < indexOfStack; k++) {
+                        matchingEntities.concat(wStacks[k]);
+                    }
+                }
+            }
         }
         else if (loc.relation == "rightof") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    for (var k = indexOfStack + 1; k < wStacks.length; k++) {
+                        matchingEntities.concat(wStacks[k]);
+                    }
+                }
+            }
         }
         else {
             console.log("Unknown relation");
             return null;
         }
+        console.log("RETURNING");
         return matchingEntities;
     }
     function findStacks(ent, stacks) {

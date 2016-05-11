@@ -110,6 +110,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
      */
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
+        console.log("New command!")
         var cmdverb : string = cmd.command;
         var cmdent : Parser.Entity = cmd.entity;
         var cmdloc : Parser.Location = cmd.location;
@@ -120,22 +121,33 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         possibleObj = interpretEntity(cmdent, state);
 
         if(cmdverb != "take"){
+          console.log("NOT TAKE");
           //Gets all the objects we want to have a relation to.
           relationObj = interpretLocation(cmdloc, state);
           //Sanity checks
           if(possibleObj.length < 1){
+            console.log("NO POSSIBLE OBJECT")
             throw new Error("No possible object!")
           } else if(relationObj.length < 1) {
+            console.log("NO POSSIBLE LOCATION")
             throw new Error("No possible location!")
           }
+          console.log("PASSED SANITY")
 
           var interpretation : DNFFormula = [[]];
           for (var s of possibleObj){
             for (var l of relationObj){
               //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
+              interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
             }
           }
+          console.log(interpretation.toString);
           return interpretation;
+          /*return [[
+            {polarity: true, relation: "above", args: ["f","g"]}],[
+            {polarity: true, relation: "above", args: ["e","g"]}
+          ]];*/
+
         } else {
           if(possibleObj.length < 1){
             throw new Error("No possible object!")
@@ -159,13 +171,14 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
+      console.log("intloc")
       var relationEntities : string[] = interpretEntity(loc.entity, state);
 
       var wStacks : string[][] = state.stacks;
 
       // To be returned
       var matchingEntities : string[] = [];
-
+      console.log(loc.relation)
       if(loc.relation == "above"){
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
@@ -334,6 +347,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         console.log("Unknown relation");
         return null;
       }
+      console.log("RETURNING")
       return matchingEntities;
     }
 

@@ -138,28 +138,37 @@ var Interpreter;
      */
     function interpretCommand(cmd, state) {
         // This returns a dummy interpretation involving two random objects in the world
+        console.log("New command!");
         var cmdverb = cmd.command;
         var cmdent = cmd.entity;
         var cmdloc = cmd.location;
         var possibleObj;
-        var possibleLoc;
+        var relationObj;
         possibleObj = interpretEntity(cmdent, state);
         if (cmdverb != "take") {
-            possibleLoc = interpretLocation(cmdloc, state);
+            console.log("NOT TAKE");
+            //Gets all the objects we want to have a relation to.
+            relationObj = interpretLocation(cmdloc, state);
+            //Sanity checks
             if (possibleObj.length < 1) {
+                console.log("NO POSSIBLE OBJECT");
                 throw new Error("No possible object!");
             }
-            else if (possibleLoc.length < 1) {
+            else if (relationObj.length < 1) {
+                console.log("NO POSSIBLE LOCATION");
                 throw new Error("No possible location!");
             }
+            console.log("PASSED SANITY");
             var interpretation = [[]];
             for (var _i = 0, possibleObj_1 = possibleObj; _i < possibleObj_1.length; _i++) {
                 var s = possibleObj_1[_i];
-                for (var _a = 0, possibleLoc_1 = possibleLoc; _a < possibleLoc_1.length; _a++) {
-                    var l = possibleLoc_1[_a];
+                for (var _a = 0, relationObj_1 = relationObj; _a < relationObj_1.length; _a++) {
+                    var l = relationObj_1[_a];
+                    //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
                     interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
                 }
             }
+            console.log(interpretation.toString);
             return interpretation;
         }
         else {
@@ -187,10 +196,12 @@ var Interpreter;
     }
     // ...TO HERE
     function interpretLocation(loc, state) {
+        console.log("intloc");
         var relationEntities = interpretEntity(loc.entity, state);
         var wStacks = state.stacks;
         // To be returned
         var matchingEntities = [];
+        console.log(loc.relation);
         if (loc.relation == "above") {
             // Go through all entities we have found
             for (var i = 0; i < relationEntities.length; i++) {
@@ -231,19 +242,109 @@ var Interpreter;
             }
         }
         else if (loc.relation == "inside") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                // Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Check that currentEntity isn't at bottom
+                    if (eStacks[j].indexOf(currentEntity) != 0) {
+                        var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
+                        // Check that box is under currentEntity
+                        if (state.objects[objectUnder].form == "box") {
+                            // Add the inside object to array
+                            matchingEntities.concat(eStacks[j].slice(objectUnder + 1, objectUnder + 2));
+                        }
+                    }
+                }
+            }
         }
         else if (loc.relation == "under") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                // Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Check that currentEntity isn't at bottom
+                    if (eStacks[j].indexOf(currentEntity) != 0) {
+                        // Slice from above the entity
+                        // Slice out objects above entity
+                        var underEntity = eStacks[j].slice(0, eStacks[j].indexOf(currentEntity));
+                        // Push to array
+                        matchingEntities.concat(underEntity);
+                    }
+                }
+            }
         }
         else if (loc.relation == "beside") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Find index of stack in the world
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    var toLeft = indexOfStack - 1;
+                    var toRight = indexOfStack + 1;
+                    // If stack to left is not out of bounds
+                    if (toLeft >= 0) {
+                        // Add to array
+                        matchingEntities.concat(wStacks[toLeft]);
+                    }
+                    // If stack to right is not out of bounds
+                    if (toRight <= wStacks.length) {
+                        // Add to array
+                        matchingEntities.concat(wStacks[toRight]);
+                    }
+                }
+            }
         }
         else if (loc.relation == "leftof") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                //Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Find where the stack is in the world
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    // For all stacks to the left (or before) the current stack
+                    for (var k = 0; k < indexOfStack; k++) {
+                        // Add that stack to array
+                        matchingEntities.concat(wStacks[k]);
+                    }
+                }
+            }
         }
         else if (loc.relation == "rightof") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                //Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Find where the stack is in the world
+                    var indexOfStack = wStacks.indexOf(eStacks[j]);
+                    // For all stacks to the right (or after) the current stack
+                    for (var k = indexOfStack + 1; k < wStacks.length; k++) {
+                        // Add that stack to array
+                        matchingEntities.concat(wStacks[k]);
+                    }
+                }
+            }
         }
         else {
             console.log("Unknown relation");
             return null;
         }
+        console.log("RETURNING");
         return matchingEntities;
     }
     // Find and return all stacks that contain provided entity
