@@ -148,10 +148,6 @@ var Interpreter;
         possibleObj = interpretEntity(cmdent, state);
         if (cmdverb != "take") {
             console.log("NOT TAKE");
-<<<<<<< 0a15ec73ee8d7100259c76506199bc0af138f6fc
-            //Gets all the objects we want to have a relation to.
-            relationObj = interpretLocation(cmdloc, state);
-=======
             //Gets all the objects we want to have a relation to
             if (cmdloc.entity.object.form != "floor") {
                 relationObj = interpretLocation(cmdloc, state);
@@ -160,7 +156,6 @@ var Interpreter;
                 relationObj = ["floor"];
             }
             console.log(relationObj.length);
->>>>>>> here you go dover.
             //Sanity checks
             if (possibleObj.length < 1) {
                 console.log("NO POSSIBLE OBJECT");
@@ -401,13 +396,10 @@ var Interpreter;
             objdefs.push(state.objects[s]);
         }
         if (objobj == null) {
-<<<<<<< 0a15ec73ee8d7100259c76506199bc0af138f6fc
-=======
             if (objform == "floor") {
                 console.log("floor");
                 return ["floor"];
             }
->>>>>>> here you go dover.
             //We have obj = {size?,color?,form}
             var tempdefs = new Array();
             //take all of the same form
