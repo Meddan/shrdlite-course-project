@@ -60,12 +60,12 @@ var Interpreter;
         }
     }
     function interpretLocation(loc, state) {
-        var relationEnteties = interpretEntity(loc.entity, state);
+        var relationEntities = interpretEntity(loc.entity, state);
         var wStacks = state.stacks;
         var matchingEntities = [];
         if (loc.relation == "above") {
-            for (var i = 0; i < relationEnteties.length; i++) {
-                var currentEntity = relationEnteties[i];
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
                 var eStacks = findStacks(currentEntity, wStacks);
                 for (var j = 0; j < eStacks.length; j++) {
                     if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
@@ -76,7 +76,23 @@ var Interpreter;
                 }
             }
         }
-        return null;
+        else if (loc.relation == "ontop") {
+        }
+        else if (loc.relation == "inside") {
+        }
+        else if (loc.relation == "under") {
+        }
+        else if (loc.relation == "beside") {
+        }
+        else if (loc.relation == "leftof") {
+        }
+        else if (loc.relation == "rightof") {
+        }
+        else {
+            console.log("Unknown relation");
+            return null;
+        }
+        return matchingEntities;
     }
     function findStacks(ent, stacks) {
         var returnArray = [];

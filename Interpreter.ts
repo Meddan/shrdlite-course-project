@@ -148,7 +148,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
-      var relationEnteties : string[] = interpretEntity(loc.entity, state);
+      var relationEntities : string[] = interpretEntity(loc.entity, state);
 
       var wStacks : string[][] = state.stacks;
 
@@ -157,8 +157,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
       if(loc.relation == "above"){
         // Go through all entities we have found
-        for(var i = 0; i < relationEnteties.length; i++){
-          var currentEntity : string = relationEnteties[i];
+        for(var i = 0; i < relationEntities.length; i++){
+          var currentEntity : string = relationEntities[i];
 
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity, wStacks);
