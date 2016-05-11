@@ -41,6 +41,8 @@ var Interpreter;
         possibleObj = interpretEntity(cmdent, state);
         if (cmdverb != "take") {
             console.log("NOT TAKE");
+            console.log("location:");
+            console.log(cmdloc.relation);
             relationObj = interpretLocation(cmdloc, state);
             if (possibleObj.length < 1) {
                 console.log("NO POSSIBLE OBJECT");
@@ -120,9 +122,10 @@ var Interpreter;
                 var eStacks = findStacks(currentEntity, wStacks);
                 for (var j = 0; j < eStacks.length; j++) {
                     if (eStacks[j].indexOf(currentEntity) != 0) {
-                        var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
-                        if (state.objects[objectUnder].form == "box") {
-                            matchingEntities.concat(eStacks[j].slice(objectUnder + 1, objectUnder + 2));
+                        var objectUnderIndex = eStacks[j].indexOf(currentEntity) - 1;
+                        var obj = eStacks[j][objectUnderIndex];
+                        if (state.objects[obj].form == "box") {
+                            matchingEntities.concat(eStacks[j][objectUnderIndex + 1]);
                         }
                     }
                 }
@@ -210,6 +213,10 @@ var Interpreter;
             objdefs.push(state.objects[s]);
         }
         if (objobj == null) {
+            if (objform == "floor") {
+                console.log("FLOOR");
+                return ["floor"];
+            }
             var tempdefs = new Array();
             for (var _a = 0, objdefs_1 = objdefs; _a < objdefs_1.length; _a++) {
                 var o = objdefs_1[_a];

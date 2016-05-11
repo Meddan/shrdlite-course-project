@@ -122,6 +122,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
         if(cmdverb != "take"){
           console.log("NOT TAKE");
+          console.log("location:");
+          console.log(cmdloc.relation);
           //Gets all the objects we want to have a relation to.
           relationObj = interpretLocation(cmdloc, state);
           //Sanity checks
@@ -381,6 +383,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
       }
 
       if (objobj == null){
+        if(objform == "floor"){
+          console.log("FLOOR")
+          return ["floor"];
+        }
         //We have obj = {size?,color?,form}
         var tempdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
         //take all of the same form
