@@ -106,6 +106,18 @@ var Interpreter;
             }
         }
         else if (loc.relation == "inside") {
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    if (eStacks[j].indexOf(currentEntity) != 0) {
+                        var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
+                        if (state.objects[objectUnder].form == "box") {
+                            matchingEntities.concat(eStacks[j].slice(objectUnder + 1, objectUnder + 2));
+                        }
+                    }
+                }
+            }
         }
         else if (loc.relation == "under") {
         }
