@@ -143,14 +143,14 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             console.log(x);
           }
 
-          var interpretation : DNFFormula = [[]];
+          var interpretation : DNFFormula = [];
           for (var s of possibleObj){
             for (var l of relationObj){
               //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
               interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
             }
           }
-          console.log(interpretation.toString);
+          console.log(interpretation);
           return interpretation;
           /*return [[
             {polarity: true, relation: "above", args: ["f","g"]}],[
