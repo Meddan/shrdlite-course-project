@@ -118,7 +118,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var possibleSubj : string[];
 
         possibleObj = interpretEntity(cmdent, state);
-        possibleSubj = interpretLoc(cmdloc, state);
+        possibleSubj = interpretLocation(cmdloc, state);
 
 
         //Verify cmdent

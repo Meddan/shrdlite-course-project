@@ -38,7 +38,7 @@ var Interpreter;
         var possibleObj;
         var possibleSubj;
         possibleObj = interpretEntity(cmdent, state);
-        possibleSubj = interpretLoc(cmdloc, state);
+        possibleSubj = interpretLocation(cmdloc, state);
         var entobj = cmdent.object;
         interpretObject(entobj, state);
         var objects = Array.prototype.concat.apply([], state.stacks);
