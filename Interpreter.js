@@ -93,6 +93,13 @@ var Interpreter;
             return ans;
         }
         else {
+            var subjectStrings = findObj(object, state);
+            var subject = new Array();
+            for (var _e = 0, subjectStrings_1 = subjectStrings; _e < subjectStrings_1.length; _e++) {
+                var s = subjectStrings_1[_e];
+                subject.push(state.objects[s]);
+            }
+            location.relation;
         }
         return null;
     }
