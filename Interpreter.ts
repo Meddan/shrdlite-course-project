@@ -147,14 +147,18 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         }
     }
     // ...TO HERE
-
+    function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
+      var relationEnteties : string[] = interpretEntity(loc.entity, state);
+      if()
+      return null;
+    }
 
     function interpretObject( obj : Parser.Object, state : WorldState) : string[]{
-      var color = obj.color;
-      var size  = obj.size;
-      var form  = obj.form;
-      var object = obj.object;
-      var location = obj.location;
+      var objcolor = obj.color;
+      var objsize  = obj.size;
+      var objform  = obj.form;
+      var objobj = obj.object;
+      var objloc = obj.location;
       var keys : string[] = Array.prototype.concat.apply([], state.stacks);
       var objdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
       for(var s of keys){
@@ -200,7 +204,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
 
         //Objects that match the second (object)
-        var objectStrings = interpretObject(location.entity.object, state);
+        var objectStrings = interpretLocation(location, state);
 
         // For each subject, check which pairing of object that is
 

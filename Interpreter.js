@@ -59,12 +59,17 @@ var Interpreter;
             return null;
         }
     }
+    function interpretLocation(loc, state) {
+        var relationEnteties = interpretEntity(loc.entity, state);
+        if ()
+            return null;
+    }
     function interpretObject(obj, state) {
-        var color = obj.color;
-        var size = obj.size;
-        var form = obj.form;
-        var object = obj.object;
-        var location = obj.location;
+        var objcolor = obj.color;
+        var objsize = obj.size;
+        var objform = obj.form;
+        var objobj = obj.object;
+        var objloc = obj.location;
         var keys = Array.prototype.concat.apply([], state.stacks);
         var objdefs = new Array();
         for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
@@ -104,7 +109,7 @@ var Interpreter;
         }
         else {
             var subjectStrings = interpretObject(object, state);
-            var objectStrings = interpretObject(location.entity.object, state);
+            var objectStrings = interpretLocation(location, state);
             if (location.relation == "above") {
             }
         }
