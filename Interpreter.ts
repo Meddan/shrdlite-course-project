@@ -261,7 +261,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
                 if (state.objects[obj].form == "box") {
 
                   // Add the inside object to array
-                  matchingEntities.concat(eStacks[j][objectUnderIndex+1]);
+                  matchingEntities.push(eStacks[j][objectUnderIndex+1]);
                 }
               }
             }
