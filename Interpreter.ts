@@ -200,40 +200,21 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         return ans;
       } else {
         //obj = {Object Location}
-
         //Objects that match the first (subject)
         var subjectStrings : string[]= interpretObject(objobj, state);
-
-
         //Objects that match the second (object)
         var objectStrings : string[]= interpretLocation(objloc, state);
-
         //Intersection between objects that match the description
         //and objects that are at the correct location
-        return intersect_arrays(subjectStrings, objectStrings);
+        subjectStrings.filter(function(n) {
+          return objectStrings.indexOf(n) != -1;
+        });
+        return subjectStrings;
       }
     }
     function removeFromArray<T>(arr : T[], toBeRemoved : T) {
       var index = arr.indexOf(toBeRemoved);
       arr.splice(index,1);
     }
-    function intersect_arrays(a, b)
-    {
-      var ai=0, bi=0;
-      var result = [];
 
-      while( ai < a.length && bi < b.length )
-      {
-         if      (a[ai] < b[bi] ){ ai++; }
-         else if (a[ai] > b[bi] ){ bi++; }
-         else /* they're equal */
-         {
-           result.push(a[ai]);
-           ai++;
-           bi++;
-         }
-      }
-
-      return result;
-    }
 }

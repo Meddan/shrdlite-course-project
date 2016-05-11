@@ -111,29 +111,14 @@ var Interpreter;
         else {
             var subjectStrings = interpretObject(objobj, state);
             var objectStrings = interpretLocation(objloc, state);
-            return intersect_arrays(subjectStrings, objectStrings);
+            subjectStrings.filter(function (n) {
+                return objectStrings.indexOf(n) != -1;
+            });
+            return subjectStrings;
         }
     }
     function removeFromArray(arr, toBeRemoved) {
         var index = arr.indexOf(toBeRemoved);
         arr.splice(index, 1);
-    }
-    function intersect_arrays(a, b) {
-        var ai = 0, bi = 0;
-        var result = [];
-        while (ai < a.length && bi < b.length) {
-            if (a[ai] < b[bi]) {
-                ai++;
-            }
-            else if (a[ai] > b[bi]) {
-                bi++;
-            }
-            else {
-                result.push(a[ai]);
-                ai++;
-                bi++;
-            }
-        }
-        return result;
     }
 })(Interpreter || (Interpreter = {}));
