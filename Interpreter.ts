@@ -194,10 +194,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
               // If it is not, push it to matching entities
 
               // Slice from above the entity
-              var sliceFrom : number = eStacks[j].indexOf(currentEntity) + 1;
+              var objIndex : number = eStacks[j].indexOf(currentEntity) + 1;
 
               // Slice out objects above entity
-              var aboveEntity : string[] = eStacks[j].slice(sliceFrom);
+              var aboveEntity : string[] = eStacks[j].slice(objIndex);
 
               // Push to array
               matchingEntities.concat(aboveEntity);
@@ -219,10 +219,10 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
               if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
 
                 // Find object directly ontop
-                var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                var objIndex = eStacks[j].indexOf(currentEntity) + 1;
 
                 // Push the object on top to array
-                matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+                matchingEntities.push(eStacks[j][objIndex]);
               }
             }
           }
