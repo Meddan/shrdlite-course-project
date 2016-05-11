@@ -149,10 +149,55 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
       var relationEnteties : string[] = interpretEntity(loc.entity, state);
-      if(loc.relation == "above"){
 
+      var wStacks : string[][] = state.stacks;
+
+      // To be returned
+      var matchingEntities : string[] = [];
+
+      if(loc.relation == "above"){
+        // Go through all entities we have found
+        for(var i = 0; i < relationEnteties.length; i++){
+          var currentEntity : string = relationEnteties[i];
+
+          // Get stacks that contain entity
+          var eStacks = findStacks(currentEntity, wStacks);
+
+          // Go through all stacks entity is in
+          for(var j = 0; j < eStacks.length; j++){
+            // Check that it is not top of the stack
+            if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
+              // If it is not, push it to matching entities
+
+              // Slice from above the entity
+              var sliceFrom : number = eStacks[j].indexOf(currentEntity) + 1;
+
+              // Slice out objects above entity
+              var aboveEntity : string[] = eStacks[j].slice(sliceFrom);
+
+              // Push to array
+              matchingEntities.concat(aboveEntity);
+            }
+          }
+
+        }
       }
       return null;
+    }
+
+    // Find and return all stacks that contain provided entity
+    function findStacks (ent : string, stacks : string[][]) : string[][]{
+      var returnArray : string[][] = [];
+
+      // Go through all stacks
+      for(var i = 0; i < stacks.length; i++){
+        // If a stack contains the provided entity
+        if(stacks[i].indexOf(ent) != -1) {
+          // Add the stack to the array of matching stacks
+          returnArray.push(stacks[i]);
+        }
+      }
+      return returnArray;
     }
 
     function interpretObject( obj : Parser.Object, state : WorldState) : string[]{

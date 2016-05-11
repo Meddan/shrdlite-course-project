@@ -61,9 +61,31 @@ var Interpreter;
     }
     function interpretLocation(loc, state) {
         var relationEnteties = interpretEntity(loc.entity, state);
+        var wStacks = state.stacks;
+        var matchingEntities = [];
         if (loc.relation == "above") {
+            for (var i = 0; i < relationEnteties.length; i++) {
+                var currentEntity = relationEnteties[i];
+                var eStacks = findStacks(currentEntity, wStacks);
+                for (var j = 0; j < eStacks.length; j++) {
+                    if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
+                        var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                        var aboveEntity = eStacks[j].slice(sliceFrom);
+                        matchingEntities.concat(aboveEntity);
+                    }
+                }
+            }
         }
         return null;
+    }
+    function findStacks(ent, stacks) {
+        var returnArray = [];
+        for (var i = 0; i < stacks.length; i++) {
+            if (stacks[i].indexOf(ent) != -1) {
+                returnArray.push(stacks[i]);
+            }
+        }
+        return returnArray;
     }
     function interpretObject(obj, state) {
         var objcolor = obj.color;
