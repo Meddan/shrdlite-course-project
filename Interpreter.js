@@ -36,19 +36,36 @@ var Interpreter;
         var cmdent = cmd.entity;
         var cmdloc = cmd.location;
         var possibleObj;
-        var possibleSubj;
+        var possibleLoc;
         possibleObj = interpretEntity(cmdent, state);
-        possibleSubj = interpretLocation(cmdloc, state);
-        var entobj = cmdent.object;
-        interpretObject(entobj, state);
-        var objects = Array.prototype.concat.apply([], state.stacks);
-        var a = objects[Math.floor(Math.random() * objects.length)];
-        var b = objects[Math.floor(Math.random() * objects.length)];
-        var interpretation = [[
-                { polarity: true, relation: "ontop", args: [a, "floor"] },
-                { polarity: true, relation: "holding", args: [b] }
-            ]];
-        return interpretation;
+        if (cmdverb != "take") {
+            possibleLoc = interpretLocation(cmdloc, state);
+            if (possibleObj.length < 1) {
+                throw new Error("No possible object!");
+            }
+            else if (possibleLoc.length < 1) {
+                throw new Error("No possible location!");
+            }
+            var interpretation = [[]];
+            for (var _i = 0, possibleObj_1 = possibleObj; _i < possibleObj_1.length; _i++) {
+                var s = possibleObj_1[_i];
+                for (var _a = 0, possibleLoc_1 = possibleLoc; _a < possibleLoc_1.length; _a++) {
+                    var l = possibleLoc_1[_a];
+                    interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
+                }
+            }
+        }
+        else {
+            if (possibleObj.length < 1) {
+                throw new Error("No possible object!");
+            }
+            var interpretation = [[]];
+            for (var _b = 0, possibleObj_2 = possibleObj; _b < possibleObj_2.length; _b++) {
+                var s = possibleObj_2[_b];
+                interpretation.push([{ polarity: true, relation: "holding", args: [s] }]);
+            }
+            return interpretation;
+        }
     }
     function interpretEntity(ent, state) {
         if (ent.quantifier == "the" || ent.quantifier == "any") {
@@ -77,6 +94,7 @@ var Interpreter;
             }
         }
         else if (loc.relation == "ontop") {
+<<<<<<< ff508219f06c92f830a0f0799ab90d76d0619799
             for (var i = 0; i < relationEntities.length; i++) {
                 var currentEntity = relationEntities[i];
                 var eStacks = findStacks(currentEntity, wStacks);
@@ -87,6 +105,8 @@ var Interpreter;
                     }
                 }
             }
+=======
+>>>>>>> Interpret command.
         }
         else if (loc.relation == "inside") {
         }

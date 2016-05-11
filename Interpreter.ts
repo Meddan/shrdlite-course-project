@@ -115,26 +115,33 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var cmdloc : Parser.Location = cmd.location;
 
         var possibleObj : string[];
-        var possibleSubj : string[];
+        var possibleLoc : string[];
 
         possibleObj = interpretEntity(cmdent, state);
-        possibleSubj = interpretLocation(cmdloc, state);
 
-
-        //Verify cmdent
-        //Get entity object
-        var entobj : Parser.Object = cmdent.object
-        interpretObject(entobj, state);
-
-
-        var objects : string[] = Array.prototype.concat.apply([], state.stacks);
-        var a : string = objects[Math.floor(Math.random() * objects.length)];
-        var b : string = objects[Math.floor(Math.random() * objects.length)];
-        var interpretation : DNFFormula = [[
-            {polarity: true, relation: "ontop", args: [a, "floor"]},
-            {polarity: true, relation: "holding", args: [b]}
-        ]];
-        return interpretation;
+        if(cmdverb != "take"){
+          possibleLoc = interpretLocation(cmdloc, state);
+          if(possibleObj.length < 1){
+            throw new Error("No possible object!")
+          } else if(possibleLoc.length < 1) {
+            throw new Error("No possible location!")
+          }
+          var interpretation : DNFFormula = [[]];
+          for (var s of possibleObj){
+            for (var l of possibleLoc){
+              interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s, l]}]);
+            }
+          }
+        } else {
+          if(possibleObj.length < 1){
+            throw new Error("No possible object!")
+          }
+          var interpretation : DNFFormula = [[]];
+          for (var s of possibleObj){
+            interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
+          }
+          return interpretation;
+        }
     }
     //This is probably what interpretCommand should do...
     // I WORK FROM HERE....
