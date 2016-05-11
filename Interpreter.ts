@@ -115,21 +115,24 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var cmdloc : Parser.Location = cmd.location;
 
         var possibleObj : string[];
-        var possibleLoc : string[];
+        var relationObj : string[];
 
         possibleObj = interpretEntity(cmdent, state);
 
         if(cmdverb != "take"){
-          possibleLoc = interpretLocation(cmdloc, state);
+          //Gets all the objects we want to have a relation to.
+          relationObj = interpretLocation(cmdloc, state);
+          //Sanity checks
           if(possibleObj.length < 1){
             throw new Error("No possible object!")
-          } else if(possibleLoc.length < 1) {
+          } else if(relationObj.length < 1) {
             throw new Error("No possible location!")
           }
+
           var interpretation : DNFFormula = [[]];
           for (var s of possibleObj){
-            for (var l of possibleLoc){
-              interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s, l]}]);
+            for (var l of relationObj){
+              //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
             }
           }
           return interpretation;
@@ -211,29 +214,6 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             }
           }
       } else if (loc.relation == "inside") {
-        // Go through all entities we have found
-        for(var i = 0; i < relationEntities.length; i++){
-          var currentEntity : string = relationEntities[i];
-
-          // Get stacks that contain entity
-          var eStacks = findStacks(currentEntity, wStacks);
-
-          // Go through all stacks entity is in
-          for(var j = 0; j < eStacks.length; j++){
-
-            // Check that currentEntity isn't at bottom
-            if (eStacks[j].indexOf(currentEntity) != 0) {
-              var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
-
-              // Check that box is under currentEntity
-              if (state.objects[objectUnder].form == "box") {
-
-                // Add the inside object to array
-                matchingEntities.concat(eStacks[j].slice(objectUnder+1,objectUnder+2));
-              }
-            }
-          }
-        }
 
       } else if (loc.relation == "under") {
         // Go through all entities we have found
