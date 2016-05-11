@@ -214,7 +214,29 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
             }
           }
       } else if (loc.relation == "inside") {
+          // Go through all entities we have found
+          for(var i = 0; i < relationEntities.length; i++){
+            var currentEntity : string = relationEntities[i];
 
+            // Get stacks that contain entity
+            var eStacks = findStacks(currentEntity, wStacks);
+
+            // Go through all stacks entity is in
+            for(var j = 0; j < eStacks.length; j++){
+
+              // Check that currentEntity isn't at bottom
+              if (eStacks[j].indexOf(currentEntity) != 0) {
+                var objectUnder = eStacks[j].indexOf(currentEntity) - 1;
+
+                // Check that box is under currentEntity
+                if (state.objects[objectUnder].form == "box") {
+
+                  // Add the inside object to array
+                  matchingEntities.concat(eStacks[j].slice(objectUnder+1,objectUnder+2));
+                }
+              }
+            }
+          }
       } else if (loc.relation == "under") {
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
