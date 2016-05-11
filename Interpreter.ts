@@ -150,7 +150,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
       var relationEnteties : string[] = interpretEntity(loc.entity, state);
       if(loc.relation == "above"){
-        
+
       }
       return null;
     }
@@ -202,22 +202,39 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         //obj = {Object Location}
 
         //Objects that match the first (subject)
-        var subjectStrings = interpretObject(objobj, state);
+        var subjectStrings : string[]= interpretObject(objobj, state);
 
 
         //Objects that match the second (object)
-        var objectStrings = interpretLocation(objloc, state);
+        var objectStrings : string[]= interpretLocation(objloc, state);
 
         //UNION BETWEEN SUBJ AND OBJ
+        return intersect_arrays(subjectStrings, objectStrings);
 
         //returna listan
       }
-
-      return null;
     }
     function removeFromArray<T>(arr : T[], toBeRemoved : T) {
       var index = arr.indexOf(toBeRemoved);
       arr.splice(index,1);
     }
+    function intersect_arrays(a, b)
+    {
+      var ai=0, bi=0;
+      var result = [];
 
+      while( ai < a.length && bi < b.length )
+      {
+         if      (a[ai] < b[bi] ){ ai++; }
+         else if (a[ai] > b[bi] ){ bi++; }
+         else /* they're equal */
+         {
+           result.push(a[ai]);
+           ai++;
+           bi++;
+         }
+      }
+
+      return result;
+    }
 }
