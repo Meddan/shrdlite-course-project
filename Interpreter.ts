@@ -132,6 +132,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
               interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s, l]}]);
             }
           }
+          return interpretation;
         } else {
           if(possibleObj.length < 1){
             throw new Error("No possible object!")

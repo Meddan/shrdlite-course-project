@@ -129,20 +129,201 @@ var Interpreter;
      * connected to `cmd`, but your version of the function should
      * analyse cmd in order to figure out what interpretation to
      * return.
-     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command` (as it has been parsed by the parser).
+     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command`
+     * (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
-     * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
+     * @returns A list of list of Literal, representing a formula in disjunctive normal form
+     * (disjunction of conjunctions). See the dummy interpetation returned in the code for an example,
+     * which means ontop(a,floor) AND holding(b).
      */
     function interpretCommand(cmd, state) {
         // This returns a dummy interpretation involving two random objects in the world
-        var objects = Array.prototype.concat.apply([], state.stacks);
-        var a = objects[Math.floor(Math.random() * objects.length)];
-        var b = objects[Math.floor(Math.random() * objects.length)];
-        var interpretation = [[
-                { polarity: true, relation: "ontop", args: [a, "floor"] },
-                { polarity: true, relation: "holding", args: [b] }
-            ]];
-        return interpretation;
+        var cmdverb = cmd.command;
+        var cmdent = cmd.entity;
+        var cmdloc = cmd.location;
+        var possibleObj;
+        var possibleLoc;
+        possibleObj = interpretEntity(cmdent, state);
+        if (cmdverb != "take") {
+            possibleLoc = interpretLocation(cmdloc, state);
+            if (possibleObj.length < 1) {
+                throw new Error("No possible object!");
+            }
+            else if (possibleLoc.length < 1) {
+                throw new Error("No possible location!");
+            }
+            var interpretation = [[]];
+            for (var _i = 0, possibleObj_1 = possibleObj; _i < possibleObj_1.length; _i++) {
+                var s = possibleObj_1[_i];
+                for (var _a = 0, possibleLoc_1 = possibleLoc; _a < possibleLoc_1.length; _a++) {
+                    var l = possibleLoc_1[_a];
+                    interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
+                }
+            }
+            return interpretation;
+        }
+        else {
+            if (possibleObj.length < 1) {
+                throw new Error("No possible object!");
+            }
+            var interpretation = [[]];
+            for (var _b = 0, possibleObj_2 = possibleObj; _b < possibleObj_2.length; _b++) {
+                var s = possibleObj_2[_b];
+                interpretation.push([{ polarity: true, relation: "holding", args: [s] }]);
+            }
+            return interpretation;
+        }
+    }
+    //This is probably what interpretCommand should do...
+    // I WORK FROM HERE....
+    function interpretEntity(ent, state) {
+        if (ent.quantifier == "the" || ent.quantifier == "any") {
+            return interpretObject(ent.object, state);
+        }
+        else {
+            console.log("Unknown quantifier: " + ent.quantifier);
+            return null;
+        }
+    }
+    // ...TO HERE
+    function interpretLocation(loc, state) {
+        var relationEntities = interpretEntity(loc.entity, state);
+        var wStacks = state.stacks;
+        // To be returned
+        var matchingEntities = [];
+        if (loc.relation == "above") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                // Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Check that it is not top of the stack
+                    if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
+                        // If it is not, push it to matching entities
+                        // Slice from above the entity
+                        var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                        // Slice out objects above entity
+                        var aboveEntity = eStacks[j].slice(sliceFrom);
+                        // Push to array
+                        matchingEntities.concat(aboveEntity);
+                    }
+                }
+            }
+        }
+        else if (loc.relation == "ontop") {
+            // Go through all entities we have found
+            for (var i = 0; i < relationEntities.length; i++) {
+                var currentEntity = relationEntities[i];
+                // Get stacks that contain entity
+                var eStacks = findStacks(currentEntity, wStacks);
+                // Go through all stacks entity is in
+                for (var j = 0; j < eStacks.length; j++) {
+                    // Check that it is not top of the stack
+                    if (eStacks[j].indexOf(currentEntity) != eStacks[j].length) {
+                        // Find object directly ontop
+                        var sliceFrom = eStacks[j].indexOf(currentEntity) + 1;
+                        // Push the object on top to array
+                        matchingEntities.concat(eStacks[j].slice(sliceFrom, sliceFrom + 1));
+                    }
+                }
+            }
+        }
+        else if (loc.relation == "inside") {
+        }
+        else if (loc.relation == "under") {
+        }
+        else if (loc.relation == "beside") {
+        }
+        else if (loc.relation == "leftof") {
+        }
+        else if (loc.relation == "rightof") {
+        }
+        else {
+            console.log("Unknown relation");
+            return null;
+        }
+        return matchingEntities;
+    }
+    // Find and return all stacks that contain provided entity
+    function findStacks(ent, stacks) {
+        var returnArray = [];
+        // Go through all stacks
+        for (var i = 0; i < stacks.length; i++) {
+            // If a stack contains the provided entity
+            if (stacks[i].indexOf(ent) != -1) {
+                // Add the stack to the array of matching stacks
+                returnArray.push(stacks[i]);
+            }
+        }
+        return returnArray;
+    }
+    function interpretObject(obj, state) {
+        var objcolor = obj.color;
+        var objsize = obj.size;
+        var objform = obj.form;
+        var objobj = obj.object;
+        var objloc = obj.location;
+        var keys = Array.prototype.concat.apply([], state.stacks);
+        var objdefs = new Array();
+        for (var _i = 0, keys_1 = keys; _i < keys_1.length; _i++) {
+            var s = keys_1[_i];
+            objdefs.push(state.objects[s]);
+        }
+        if (objobj == null) {
+            //We have obj = {size?,color?,form}
+            var tempdefs = new Array();
+            //take all of the same form
+            for (var _a = 0, objdefs_1 = objdefs; _a < objdefs_1.length; _a++) {
+                var o = objdefs_1[_a];
+                if (o.form == objform) {
+                    tempdefs.push(o);
+                }
+            }
+            //remove all objects that do not have the correct color
+            if (objcolor != null) {
+                for (var _b = 0, tempdefs_1 = tempdefs; _b < tempdefs_1.length; _b++) {
+                    var u = tempdefs_1[_b];
+                    if (u.color != objcolor) {
+                        removeFromArray(tempdefs, u);
+                    }
+                }
+            }
+            //remove all objects of the wrong size
+            if (objsize != null) {
+                for (var _c = 0, tempdefs_2 = tempdefs; _c < tempdefs_2.length; _c++) {
+                    var u = tempdefs_2[_c];
+                    if (u.size != objsize) {
+                        removeFromArray(tempdefs, u);
+                    }
+                }
+            }
+            //return list of all matching objects.
+            var ans = new Array();
+            for (var _d = 0, tempdefs_3 = tempdefs; _d < tempdefs_3.length; _d++) {
+                var d = tempdefs_3[_d];
+                ans.push(keys[objdefs.indexOf(d)]);
+            }
+            return ans;
+        }
+        else {
+            //obj = {Object Location}
+            //Objects that match the first (subject)
+            var subjectStrings = interpretObject(objobj, state);
+            //Objects that match the second (object)
+            var objectStrings = interpretLocation(objloc, state);
+            //Intersection between objects that match the description
+            //and objects that are at the correct location
+            subjectStrings.filter(function (n) {
+                return objectStrings.indexOf(n) != -1;
+            });
+            return subjectStrings;
+        }
+    }
+    function removeFromArray(arr, toBeRemoved) {
+        var index = arr.indexOf(toBeRemoved);
+        arr.splice(index, 1);
     }
 })(Interpreter || (Interpreter = {}));
 ///<reference path="World.ts"/>

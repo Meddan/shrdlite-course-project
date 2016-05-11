@@ -54,6 +54,7 @@ var Interpreter;
                     interpretation.push([{ polarity: true, relation: cmdloc.relation, args: [s, l] }]);
                 }
             }
+            return interpretation;
         }
         else {
             if (possibleObj.length < 1) {
