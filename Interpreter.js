@@ -35,6 +35,10 @@ var Interpreter;
         var cmdverb = cmd.command;
         var cmdent = cmd.entity;
         var cmdloc = cmd.location;
+        var possibleObj;
+        var possibleSubj;
+        possibleObj = interpretEntity(cmdent, state);
+        possibleSubj = interpretLoc(cmdloc, state);
         var entobj = cmdent.object;
         interpretObject(entobj, state);
         var objects = Array.prototype.concat.apply([], state.stacks);
@@ -46,10 +50,16 @@ var Interpreter;
             ]];
         return interpretation;
     }
-    function interpretObject(obj, state) {
-        findObj(obj);
+    function interpretEntity(ent, state) {
+        if (ent.quantifier == "the" || ent.quantifier == "any") {
+            return interpretObject(ent.object, state);
+        }
+        else {
+            console.log("Unknown quantifier: " + ent.quantifier);
+            return null;
+        }
     }
-    function findObj(obj, state) {
+    function interpretObject(obj, state) {
         var color = obj.color;
         var size = obj.size;
         var form = obj.form;
@@ -93,18 +103,8 @@ var Interpreter;
             return ans;
         }
         else {
-            var subjectStrings = findObj(object, state);
-            var subjects = new Array();
-            for (var _e = 0, subjectStrings_1 = subjectStrings; _e < subjectStrings_1.length; _e++) {
-                var s = subjectStrings_1[_e];
-                subjects.push(state.objects[s]);
-            }
-            var objectStrings = findObj(location.entity.object, state);
-            var objects = new Array();
-            for (var _f = 0, objectStrings_1 = objectStrings; _f < objectStrings_1.length; _f++) {
-                var s = objectStrings_1[_f];
-                objects.push(state.objects[s]);
-            }
+            var subjectStrings = interpretObject(object, state);
+            var objectStrings = interpretObject(location.entity.object, state);
             if (location.relation == "above") {
             }
         }

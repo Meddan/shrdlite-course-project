@@ -139,27 +139,17 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     //This is probably what interpretCommand should do...
     // I WORK FROM HERE....
     function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
-        interpretObjects(ent.object, state)
+        if(ent.quantifier == "the" || ent.quantifier == "any"){
+          return interpretObject(ent.object, state);
+        } else {
+          console.log("Unknown quantifier: " + ent.quantifier)
+          return null;
+        }
     }
-
-    function interpretObjects(cmdobj : Parser.Object, state : WorldState) : string[] {
-         cmdobj : Parser.Object  = cmdent.object;
-         
-         col = cmdobj.co
-         for (var stack in state.stacks){
-           for (var string in stack) {
-
-           }
-         }
-    } 
-
     // ...TO HERE
 
 
-    function interpretObject( obj : Parser.Object, state : WorldState) : DNFFormula{
-      findObj(obj)
-    }
-    function findObj(obj : Parser.Object, state : WorldState) : string[] {
+    function interpretObject( obj : Parser.Object, state : WorldState) : string[]{
       var color = obj.color;
       var size  = obj.size;
       var form  = obj.form;
@@ -206,18 +196,11 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         //obj = {Object Location}
 
         //Objects that match the first (subject)
-        var subjectStrings = findObj(object, state);
-        var subjects : ObjectDefinition[] = new Array<ObjectDefinition>();
-        for(var s of subjectStrings){
-          subjects.push(state.objects[s]);
-        }
+        var subjectStrings = interpretObject(object, state);
+
 
         //Objects that match the second (object)
-        var objectStrings = findObj(location.entity.object, state);
-        var objects : ObjectDefinition[] = new Array<ObjectDefinition>();
-        for(var s of objectStrings){
-          objects.push(state.objects[s]);
-        }
+        var objectStrings = interpretObject(location.entity.object, state);
 
         // For each subject, check which pairing of object that is
 
@@ -229,7 +212,6 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
       return null;
     }
-
     function removeFromArray<T>(arr : T[], toBeRemoved : T) {
       var index = arr.indexOf(toBeRemoved);
       arr.splice(index,1);
