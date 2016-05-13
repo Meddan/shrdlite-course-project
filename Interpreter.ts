@@ -156,7 +156,6 @@ module Interpreter {
                 if(s!=l){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
                 }
-                interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
               }
             }
           }
