@@ -125,7 +125,8 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           console.log("NOT TAKE");
           //Gets all the objects we want to have a relation to
           if(cmdloc.entity.object.form != "floor"){
-            relationObj = interpretLocation(cmdloc, state);
+            console.log(JSON.stringify(cmdloc.entity.object));
+            relationObj = interpretEntity(cmdloc.entity, state);
           } else {
             relationObj = ["floor"]
           }
@@ -150,7 +151,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
               interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
             }
           }
-          console.log(interpretation);
+          console.log("We return");
           return interpretation;
           /*return [[
             {polarity: true, relation: "above", args: ["f","g"]}],[
@@ -180,7 +181,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
     }
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
-      console.log("intloc")
+      console.log("intLoc")
       var relationEntities : string[] = interpretEntity(loc.entity, state);
 
       var wStacks : string[][] = state.stacks;
@@ -436,17 +437,25 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         }
         return ans;
       } else {
+        console.log("Object location")
         //obj = {Object Location}
         //Objects that match the first (subject)
         var subjectStrings : string[]= interpretObject(objobj, state);
+        console.log("subString: " + subjectStrings.length)
+        console.log(subjectStrings);
         //Objects that match the second (object)
+        console.log(JSON.stringify(objloc));
         var objectStrings : string[]= interpretLocation(objloc, state);
+        console.log("objString: " + objectStrings.length)
+        console.log(objectStrings);
         //Intersection between objects that match the description
         //and objects that are at the correct location
-        subjectStrings.filter(function(n) {
+        var ansList =subjectStrings.filter(function(n) {
           return objectStrings.indexOf(n) != -1;
         });
-        return subjectStrings;
+        console.log("ansList: " + ansList.length)
+        console.log(ansList);
+        return ansList;
       }
     }
     function removeFromArray<T>(arr : T[], toBeRemoved : T) {
