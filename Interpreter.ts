@@ -169,6 +169,7 @@ module Interpreter {
         }
     }
 
+
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
       if(l == "floor"){
         return true;
@@ -219,8 +220,6 @@ module Interpreter {
       return true;
     }
 
-    //This is probably what interpretCommand should do...
-    // I WORK FROM HERE....
     function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
         if(ent.quantifier == "the" || ent.quantifier == "any"){
           return interpretObject(ent.object, state);
@@ -228,7 +227,7 @@ module Interpreter {
           return null;
         }
     }
-    // ...TO HERE
+    //Finds all objects matching the location given, returning the keys of these objects.
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
       var relationEntities : string[] = interpretEntity(loc.entity, state);
 
@@ -236,6 +235,8 @@ module Interpreter {
 
       // To be returned
       var matchingEntities : string[] = [];
+
+      //Enormous If-statement finding objects depending on their relation.
       if(loc.relation == "above"){
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
@@ -427,13 +428,14 @@ module Interpreter {
       }
       return returnArray;
     }
-
+    //Find all objects in the world matching a objectdefinition. 
     function interpretObject( obj : Parser.Object, state : WorldState) : string[]{
       var objcolor = obj.color;
       var objsize  = obj.size;
       var objform  = obj.form;
       var objobj = obj.object;
       var objloc = obj.location;
+
       var keys : string[] = Array.prototype.concat.apply([], state.stacks);
       var objdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
       for(var s of keys){
