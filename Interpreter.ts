@@ -164,7 +164,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           if(possibleObj.length < 1){
             throw new Error("No possible object!")
           }
-          var interpretation : DNFFormula = [[]];
+          var interpretation : DNFFormula = [];
           for (var s of possibleObj){
             interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
           }
