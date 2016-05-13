@@ -410,7 +410,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
         var tempdefs : ObjectDefinition[] = new Array<ObjectDefinition>();
         //take all of the same form
         for(var o of objdefs){
-          if (o.form == objform || o.form == "anyform"){
+          if (o.form == objform || objform == "anyform"){
             tempdefs.push(o);
           }
         }
