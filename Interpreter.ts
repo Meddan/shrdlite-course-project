@@ -147,11 +147,15 @@ module Interpreter {
           var interpretation : DNFFormula = [];
           for (var s of possibleObj){
             for (var l of relationObj){
-              //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
-              if(allowedRelation(s,l, state)){
-                interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
-              }
-            }
+              var objRel = cmdloc.relation;
+              if (objRel == "ontop" || objRel == "inside"){
+                if(allowedRelation(s,l, state)){
+                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
+                }      
+              } else {
+                interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
+              } 
+            } 
           }
           console.log("We return");
           return interpretation;
