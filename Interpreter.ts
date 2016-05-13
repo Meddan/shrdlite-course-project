@@ -148,7 +148,9 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           for (var s of possibleObj){
             for (var l of relationObj){
               //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
-              interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
+              if(s!=l){
+                interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
+              }
             }
           }
           console.log("We return");
@@ -323,6 +325,7 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
 
       } else if (loc.relation == "leftof") {
         // Go through all entities we have found
+        console.log("IN LEFT OF");
         for(var i = 0; i < relationEntities.length; i++){
           var currentEntity : string = relationEntities[i];
 
@@ -333,10 +336,12 @@ Top-level function for the Interpreter. It calls `interpretCommand` for each pos
           for(var j = 0; j < eStacks.length; j++){
             // Find where the stack is in the world
             var indexOfStack = wStacks.indexOf(eStacks[j]);
+            console.log("STACK INDEX: " + indexOfStack);
 
             // For all stacks to the left (or before) the current stack
             for(var k = 0; k < indexOfStack; k++){
               // Add that stack to array
+              console.log("STACK TO ADD:" + wStacks[k]);
               matchingEntities.concat(wStacks[k]);
             }
           }
