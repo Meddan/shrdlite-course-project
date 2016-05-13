@@ -151,13 +151,18 @@ module Interpreter {
               if (objRel == "ontop" || objRel == "inside"){
                 if(allowedRelation(s,l, state)){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                }      
+                }
               } else {
-                interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-              } 
-            } 
+                if(s!=l){
+                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
+                }
+              }
+            }
           }
           console.log("We return");
+          if(interpretation.length == 0){
+            throw new Error("No interpretation!");
+          }
           return interpretation;
           /*return [[
             {polarity: true, relation: "above", args: ["f","g"]}],[
@@ -182,7 +187,9 @@ module Interpreter {
       var targetSize : string = state.objects[l].size;
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
-
+      if(s == l){
+        return false;
+      }
       if(objectSize == "large" && targetSize == "small"){
           return false;
       }
