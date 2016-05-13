@@ -110,8 +110,6 @@ module Interpreter {
      */
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
-        console.log("New command!")
-        console.log(cmd)
         var cmdverb : string = cmd.command;
         var cmdent : Parser.Entity = cmd.entity;
         var cmdloc : Parser.Location = cmd.location;
@@ -122,26 +120,17 @@ module Interpreter {
         possibleObj = interpretEntity(cmdent, state);
 
         if(cmdverb != "take"){
-          console.log("NOT TAKE");
           //Gets all the objects we want to have a relation to
           if(cmdloc.entity.object.form != "floor"){
-            console.log(JSON.stringify(cmdloc.entity.object));
             relationObj = interpretEntity(cmdloc.entity, state);
           } else {
             relationObj = ["floor"]
           }
-          console.log(relationObj.length)
           //Sanity checks
           if(possibleObj.length < 1){
-            console.log("NO POSSIBLE OBJECT")
             throw new Error("No possible object!")
           } else if(relationObj.length < 1) {
-            console.log("NO POSSIBLE LOCATION")
             throw new Error("No possible location!")
-          }
-          console.log("PASSED SANITY")
-          for(var x of relationObj){
-            console.log(x);
           }
 
           var interpretation : DNFFormula = [];
@@ -158,13 +147,10 @@ module Interpreter {
                 }
               }
             }
-          }
-          console.log("We return");
+          };
           if(interpretation.length == 0){
             throw new Error("No interpretation!");
           }
-          console.log(interpretation.length);
-          console.log(interpretation)
           return interpretation;
           /*return [[
             {polarity: true, relation: "above", args: ["f","g"]}],[
@@ -179,7 +165,6 @@ module Interpreter {
           for (var s of possibleObj){
             interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
           }
-          console.log("return from holding");
           return interpretation;
         }
     }
@@ -197,16 +182,12 @@ module Interpreter {
         return false;
       }
 
-      console.log("IN ALLOWEDRELATION");
-
       if(objectSize == "large" && targetSize == "small"){
-          console.log("SIZED NO MATHC");
           return false;
       }
 
       //Balls can't support anything.
       if(targetShape == "ball"){
-        console.log("IS BALL");
         return false;
       }
 
@@ -214,32 +195,27 @@ module Interpreter {
       if(targetShape == "box"){
          if(objectShape == "pyramid" || objectShape == "box" || objectShape == "plank"){
             if(!(targetSize == "large" && objectSize == "small")){
-              console.log("SOME ERROR");
               return false;
             }
          }
       }
 
       //Balls may only be placed on the floor or in box
-      console.log("CHECKNIG BALLS");
       if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){
-        console.log("BALL NOT ALLOWED");
         return false
       }
 
       //Small boxes cannot be supported by small bricks or pyramids.
       if(objectShape == "box" && objectSize == "small"){
         if(targetSize == "small" && (targetShape == "pyramid" || targetShape == "brick")){
-          console.log("NOT ALLWOED BOX");
           return false;
         }
       }
       //Large boxes cannot be supported by large pyramids.
       if(objectSize == "large" && objectShape == "box"){
-        console.log("NOT ALLWOED OTHER");
         return !(targetShape == "pyramid");
       }
-      console.log("DAN");
+
       return true;
     }
 
@@ -249,20 +225,17 @@ module Interpreter {
         if(ent.quantifier == "the" || ent.quantifier == "any"){
           return interpretObject(ent.object, state);
         } else {
-          console.log("Unknown quantifier: " + ent.quantifier)
           return null;
         }
     }
     // ...TO HERE
     function interpretLocation( loc : Parser.Location, state : WorldState) : string[]{
-      console.log("intLoc")
       var relationEntities : string[] = interpretEntity(loc.entity, state);
 
       var wStacks : string[][] = state.stacks;
 
       // To be returned
       var matchingEntities : string[] = [];
-      console.log(loc.relation)
       if(loc.relation == "above"){
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
@@ -435,7 +408,6 @@ module Interpreter {
           }
         }
       } else {
-        console.log("Unknown relation");
         return null;
       }
       return matchingEntities;
@@ -470,7 +442,6 @@ module Interpreter {
 
       if (objobj == null){
         if(objform == "floor"){
-          console.log("floor");
           return ["floor"];
         }
         //We have obj = {size?,color?,form}
@@ -509,24 +480,17 @@ module Interpreter {
         }
         return ans;
       } else {
-        console.log("Object location")
         //obj = {Object Location}
         //Objects that match the first (subject)
         var subjectStrings : string[]= interpretObject(objobj, state);
-        console.log("subString: " + subjectStrings.length)
-        console.log(subjectStrings);
         //Objects that match the second (object)
-        console.log(JSON.stringify(objloc));
         var objectStrings : string[]= interpretLocation(objloc, state);
-        console.log("objString: " + objectStrings.length)
-        console.log(objectStrings);
         //Intersection between objects that match the description
         //and objects that are at the correct location
         var ansList =subjectStrings.filter(function(n) {
           return objectStrings.indexOf(n) != -1;
         });
-        console.log("ansList: " + ansList.length)
-        console.log(ansList);
+        
         return ansList;
       }
     }
