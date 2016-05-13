@@ -172,6 +172,7 @@ module Interpreter {
           for (var s of possibleObj){
             interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
           }
+          console.log("return from holding");
           return interpretation;
         }
     }
@@ -260,7 +261,7 @@ module Interpreter {
               var aboveEntity : string[] = eStacks[j].slice(objIndex);
 
               // Push to array
-              matchingEntities.concat(aboveEntity);
+              matchingEntities = matchingEntities.concat(aboveEntity);
             }
           }
 
@@ -337,7 +338,7 @@ module Interpreter {
               var underEntity : string[] = eStacks[j].slice(0, eStacks[j].indexOf(currentEntity));
 
               // Push to array
-              matchingEntities.concat(underEntity);
+              matchingEntities = matchingEntities.concat(underEntity);
             }
           }
         }
@@ -359,21 +360,18 @@ module Interpreter {
             // If stack to left is not out of bounds
             if(toLeft >= 0){
               // Add to array
-              matchingEntities.concat(wStacks[toLeft]);
+              matchingEntities = matchingEntities.concat(wStacks[toLeft]);
             }
 
             // If stack to right is not out of bounds
             if(toRight <= wStacks.length){
               // Add to array
-              matchingEntities.concat(wStacks[toRight]);
+              matchingEntities = matchingEntities.concat(wStacks[toRight]);
             }
           }
         }
-
-
       } else if (loc.relation == "leftof") {
         // Go through all entities we have found
-        console.log("IN LEFT OF");
         for(var i = 0; i < relationEntities.length; i++){
           var currentEntity : string = relationEntities[i];
 
@@ -384,13 +382,11 @@ module Interpreter {
           for(var j = 0; j < eStacks.length; j++){
             // Find where the stack is in the world
             var indexOfStack = wStacks.indexOf(eStacks[j]);
-            console.log("STACK INDEX: " + indexOfStack);
 
             // For all stacks to the left (or before) the current stack
             for(var k = 0; k < indexOfStack; k++){
               // Add that stack to array
-              console.log("STACK TO ADD:" + wStacks[k]);
-              matchingEntities.concat(wStacks[k]);
+              matchingEntities = matchingEntities.concat(wStacks[k]);
             }
           }
         }
@@ -411,7 +407,7 @@ module Interpreter {
             // For all stacks to the right (or after) the current stack
             for(var k = indexOfStack+1; k < wStacks.length; k++){
               // Add that stack to array
-              matchingEntities.concat(wStacks[k]);
+              matchingEntities = matchingEntities.concat(wStacks[k]);
             }
           }
         }
