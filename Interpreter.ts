@@ -97,7 +97,7 @@ module Interpreter {
     /**
      * The core interpretation function. The code here is no longer a template!
      * It finds all possible objects referenced in the command, returning the possible
-     * interpretations as a DNFFormula. See Readme for more information. 
+     * interpretations as a DNFFormula. See Readme for more information.
      * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command`
      * (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
@@ -115,7 +115,7 @@ module Interpreter {
 
         possibleObj = interpretEntity(cmdent, state);
 
-        if(cmdverb != "take"){
+        if(cmdverb != "take"){ // If the command isn't take, we have a relation between two objects
           //Gets all the objects we want to have a relation to
           if(cmdloc.entity.object.form != "floor"){
             relationObj = interpretEntity(cmdloc.entity, state);
@@ -130,28 +130,36 @@ module Interpreter {
           }
 
           var interpretation : DNFFormula = [];
+
+          // Create commands for all possible relations between the different objects
           for (var s of possibleObj){
             for (var l of relationObj){
               var objRel = cmdloc.relation;
-              //Only objects actually being put on or inside each other needs to be checked here. 
-              //Other than that, just add all combinations as possible interpretations. 
+              //Only objects actually being put on or inside each other needs to be checked here.
+              //Other than that, just add all combinations as possible interpretations.
               if (objRel == "ontop" || objRel == "inside"){
                 if(allowedRelation(s,l, state)){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
                 }
               } else {
+                // An object can't have a relation to itself
                 if(s!=l){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
                 }
               }
             }
-          };
+          }
+
+          // If there are no interpretations, throw an error
           if(interpretation.length == 0){
             throw new Error("No interpretation!");
           }
+
           return interpretation;
 
-        } else {
+        } else { // If the command is take, the goal is to hold an object
+
+          // If there are no matches for the requested object, throw an error
           if(possibleObj.length < 1){
             throw new Error("No possible object!")
           }
