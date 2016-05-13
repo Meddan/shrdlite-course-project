@@ -95,18 +95,14 @@ module Interpreter {
     //////////////////////////////////////////////////////////////////////
     // private functions
     /**
-     * The core interpretation function. The code here is just a
-     * template; you should rewrite this function entirely. In this
-     * template, the code produces a dummy interpretation which is not
-     * connected to `cmd`, but your version of the function should
-     * analyse cmd in order to figure out what interpretation to
-     * return.
+     * The core interpretation function. The code here is no longer a template!
+     * It finds all possible objects referenced in the command, returning the possible
+     * interpretations as a DNFFormula. See Readme for more information. 
      * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command`
      * (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
      * @returns A list of list of Literal, representing a formula in disjunctive normal form
-     * (disjunction of conjunctions). See the dummy interpetation returned in the code for an example,
-     * which means ontop(a,floor) AND holding(b).
+     * (disjunction of conjunctions).
      */
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
@@ -137,6 +133,8 @@ module Interpreter {
           for (var s of possibleObj){
             for (var l of relationObj){
               var objRel = cmdloc.relation;
+              //Only objects actually being put on or inside each other needs to be checked here. 
+              //Other than that, just add all combinations as possible interpretations. 
               if (objRel == "ontop" || objRel == "inside"){
                 if(allowedRelation(s,l, state)){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
