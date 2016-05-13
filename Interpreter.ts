@@ -152,10 +152,6 @@ module Interpreter {
             throw new Error("No interpretation!");
           }
           return interpretation;
-          /*return [[
-            {polarity: true, relation: "above", args: ["f","g"]}],[
-            {polarity: true, relation: "above", args: ["e","g"]}
-          ]];*/
 
         } else {
           if(possibleObj.length < 1){
@@ -168,8 +164,10 @@ module Interpreter {
           return interpretation;
         }
     }
-
-
+    /*
+    Checks if the objects s and l are allowed to relate, where s is the object
+    to be moved and l is the object that it will be placed on
+    */
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
       if(l == "floor"){
         return true;
@@ -179,10 +177,12 @@ module Interpreter {
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
 
+      //Objects can't relate to themselves
       if(s == l){
         return false;
       }
 
+      //Large objects cannot be placed on small ones
       if(objectSize == "large" && targetSize == "small"){
           return false;
       }
@@ -219,7 +219,6 @@ module Interpreter {
 
       return true;
     }
-
     function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
         if(ent.quantifier == "the" || ent.quantifier == "any"){
           return interpretObject(ent.object, state);
@@ -428,7 +427,7 @@ module Interpreter {
       }
       return returnArray;
     }
-    //Find all objects in the world matching a objectdefinition. 
+    //Find all objects in the world matching a objectdefinition.
     function interpretObject( obj : Parser.Object, state : WorldState) : string[]{
       var objcolor = obj.color;
       var objsize  = obj.size;
@@ -489,10 +488,10 @@ module Interpreter {
         var objectStrings : string[]= interpretLocation(objloc, state);
         //Intersection between objects that match the description
         //and objects that are at the correct location
-        var ansList =subjectStrings.filter(function(n) {
+        var ansList = subjectStrings.filter(function(n) {
           return objectStrings.indexOf(n) != -1;
         });
-        
+
         return ansList;
       }
     }
