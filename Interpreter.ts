@@ -173,10 +173,10 @@ module Interpreter {
     }
 
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
-      string objectSize = state.objects[s].size;
-      string targetSize = state.objects[l].size;
-      string objectShape = state.objects[s].shape;
-      string targetShape = state.objects[l].shape;
+      var objectSize : string = state.objects[s].size;
+      var targetSize : string = state.objects[l].size;
+      var objectShape : string = state.objects[s].form;
+      var targetShape : string = state.objects[l].form;
 
       if(objectSize == "large" && targetSize == "small"){
           return false;
@@ -196,8 +196,8 @@ module Interpreter {
          }
       }
 
-      //Balls may only be placed on the floor 
-      if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){   
+      //Balls may only be placed on the floor
+      if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){
         return false
       }
 
@@ -211,7 +211,7 @@ module Interpreter {
       if(objectSize == "large" && objectShape == "box"){
         return (targetShape == "pyramid");
       }
-      
+
       return true;
     }
 
