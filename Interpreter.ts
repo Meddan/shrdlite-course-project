@@ -148,7 +148,7 @@ module Interpreter {
           for (var s of possibleObj){
             for (var l of relationObj){
               //FIND OUT WHAT POSITIONS ARE OK DEPENDING ON s and l and add them to interpretation.
-              if(s!=l){
+              if(allowedRelation(s,l, state)){
                 interpretation.push([{polarity: true, relation: cmdloc.relation, args: [s,l]}]);
               }
             }
@@ -171,6 +171,50 @@ module Interpreter {
           return interpretation;
         }
     }
+
+    function allowedRelation(s : string, l : string, state : WorldState) : boolean {
+      string objectSize = state.objects[s].size;
+      string targetSize = state.objects[l].size;
+      string objectShape = state.objects[s].shape;
+      string targetShape = state.objects[l].shape;
+
+      if(objectSize == "large" && targetSize == "small"){
+          return false;
+      }
+
+      //Balls can't support anything.
+      if(targetShape == "ball"){
+        return false;
+      }
+
+      //Boxes cannot contain pyramids, planks or boxes of the same size.
+      if(targetShape == "box"){
+         if(objectShape == "pyramid" || objectShape == "box" || objectShape == "plank"){
+            if(!(targetSize == "large" && objectSize == "small")){
+              return false;
+            }
+         }
+      }
+
+      //Balls may only be placed on the floor 
+      if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){   
+        return false
+      }
+
+      //Small boxes cannot be supported by small bricks or pyramids.
+      if(objectShape == "box" && objectSize == "small"){
+        if(targetSize == "small" && (targetShape == "pyramid" || targetShape == "brick")){
+          return false;
+        }
+      }
+      //Large boxes cannot be supported by large pyramids.
+      if(objectSize == "large" && objectShape == "box"){
+        return (targetShape == "pyramid");
+      }
+      
+      return true;
+    }
+
     //This is probably what interpretCommand should do...
     // I WORK FROM HERE....
     function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
