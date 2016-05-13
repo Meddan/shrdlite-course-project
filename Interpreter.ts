@@ -156,6 +156,7 @@ module Interpreter {
                 if(s!=l){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
                 }
+                interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
               }
             }
           }
@@ -163,6 +164,8 @@ module Interpreter {
           if(interpretation.length == 0){
             throw new Error("No interpretation!");
           }
+          console.log(interpretation.length);
+          console.log(interpretation)
           return interpretation;
           /*return [[
             {polarity: true, relation: "above", args: ["f","g"]}],[
@@ -183,19 +186,28 @@ module Interpreter {
     }
 
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
+      if(l == "floor"){
+        return true;
+      }
       var objectSize : string = state.objects[s].size;
       var targetSize : string = state.objects[l].size;
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
+
       if(s == l){
         return false;
       }
+
+      console.log("IN ALLOWEDRELATION");
+
       if(objectSize == "large" && targetSize == "small"){
+          console.log("SIZED NO MATHC");
           return false;
       }
 
       //Balls can't support anything.
       if(targetShape == "ball"){
+        console.log("IS BALL");
         return false;
       }
 
@@ -203,27 +215,32 @@ module Interpreter {
       if(targetShape == "box"){
          if(objectShape == "pyramid" || objectShape == "box" || objectShape == "plank"){
             if(!(targetSize == "large" && objectSize == "small")){
+              console.log("SOME ERROR");
               return false;
             }
          }
       }
 
       //Balls may only be placed on the floor or in box
+      console.log("CHECKNIG BALLS");
       if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){
+        console.log("BALL NOT ALLOWED");
         return false
       }
 
       //Small boxes cannot be supported by small bricks or pyramids.
       if(objectShape == "box" && objectSize == "small"){
         if(targetSize == "small" && (targetShape == "pyramid" || targetShape == "brick")){
+          console.log("NOT ALLWOED BOX");
           return false;
         }
       }
       //Large boxes cannot be supported by large pyramids.
       if(objectSize == "large" && objectShape == "box"){
+        console.log("NOT ALLWOED OTHER");
         return !(targetShape == "pyramid");
       }
-
+      console.log("DAN");
       return true;
     }
 
