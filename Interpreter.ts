@@ -458,19 +458,24 @@ module Interpreter {
             tempdefs.push(o);
           }
         }
+
         //remove all objects that do not have the correct color
         if(objcolor != null){
-          for (var u of tempdefs){
-            if(u.color != objcolor){
-              removeFromArray(tempdefs,u);
+          for (var x = 0; x < tempdefs.length; x++){
+            var xObj = tempdefs[x];
+            if(xObj.color != objcolor){
+              removeFromArray(tempdefs,xObj);
+              x--;
             }
           }
         }
         //remove all objects of the wrong size
         if(objsize != null){
-          for (var u of tempdefs){
-            if(u.size != objsize){
-              removeFromArray(tempdefs,u);
+          for (var u = 0; u < tempdefs.length; u++){
+            var uObj = tempdefs[u];
+            if(uObj.size != objsize){
+              removeFromArray(tempdefs,uObj);
+              u--;
             }
           }
         }
