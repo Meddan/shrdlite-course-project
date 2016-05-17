@@ -364,7 +364,7 @@ module Interpreter {
             var objectUnderIndex = eStacks.indexOf(currentEntity);
             var obj = eStacks[objectUnderIndex];
 
-            // Check that box is under currentEntity
+            // Check that entity under currentEntity is a box
             if (state.objects[obj].form == "box") {
 
               // Add the inside object to array
@@ -381,7 +381,6 @@ module Interpreter {
 
           // Check that currentEntity isn't at bottom
           if (eStacks[j].indexOf(currentEntity) != 0) {
-            // Slice from above the entity
 
             // Slice out objects above entity
             var underEntity : string[] = eStacks.slice(0, eStacks.indexOf(currentEntity));
