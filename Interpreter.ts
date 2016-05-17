@@ -308,23 +308,19 @@ module Interpreter {
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity, wStacks);
 
-          // Go through all stacks entity is in
-          for(var j = 0; j < eStacks.length; j++){
-            // Check that it is not top of the stack
-            if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
-              // If it is not, push it to matching entities
+          // Check that it is not top of the stack
+          if (eStacks.indexOf(currentEntity) != eStacks.length){
+            // If it is not, push it to matching entities
 
-              // Slice from above the entity
-              var objIndex : number = eStacks[j].indexOf(currentEntity) + 1;
+            // Slice from above the entity
+            var objIndex : number = eStacks.indexOf(currentEntity) + 1;
 
-              // Slice out objects above entity
-              var aboveEntity : string[] = eStacks[j].slice(objIndex);
+            // Slice out objects above entity
+            var aboveEntity : string[] = eStacks.slice(objIndex);
 
-              // Push to array
-              matchingEntities = matchingEntities.concat(aboveEntity);
-            }
+            // Push to array
+            matchingEntities = matchingEntities.concat(aboveEntity);
           }
-
         }
       } else if (loc.relation == "ontop") {
           // Go through all entities we have found
@@ -336,17 +332,15 @@ module Interpreter {
               // Get stacks that contain entity
               var eStacks = findStacks(currentEntity, wStacks);
 
-              // Go through all stacks entity is in
-              for(var j = 0; j < eStacks.length; j++){
-                // Check that it is not top of the stack
-                if (eStacks[j].indexOf(currentEntity) != eStacks[j].length){
+              // Check that it is not top of the stack
+              if (eStacks.indexOf(currentEntity) != eStacks.length){
 
-                // Find object directly ontop
-                var objIndex = eStacks[j].indexOf(currentEntity) + 1;
+              // Find object directly ontop
+              var objIndex = eStacks.indexOf(currentEntity) + 1;
 
-                // Push the object on top to array
-                matchingEntities.push(eStacks[j][objIndex]);
-                }
+              // Push the object on top to array
+              matchingEntities.push(eStacks[objIndex]);
+
               }
             } else { // If we do want something on top of the floor
               // For all stacks
@@ -367,17 +361,14 @@ module Interpreter {
             // Get stacks that contain entity
             var eStacks = findStacks(currentEntity, wStacks);
 
-            // Go through all stacks entity is in
-            for(var j = 0; j < eStacks.length; j++){
-              var objectUnderIndex = eStacks[j].indexOf(currentEntity);
-              var obj = eStacks[j][objectUnderIndex];
+            var objectUnderIndex = eStacks.indexOf(currentEntity);
+            var obj = eStacks[objectUnderIndex];
 
-              // Check that box is under currentEntity
-              if (state.objects[obj].form == "box") {
+            // Check that box is under currentEntity
+            if (state.objects[obj].form == "box") {
 
-                // Add the inside object to array
-                matchingEntities.push(eStacks[j][objectUnderIndex+1]);
-              }
+              // Add the inside object to array
+              matchingEntities.push(eStacks[objectUnderIndex+1]);
             }
           }
       } else if (loc.relation == "under") {
@@ -388,19 +379,17 @@ module Interpreter {
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity, wStacks);
 
-          // Go through all stacks entity is in
-          for(var j = 0; j < eStacks.length; j++){
-            // Check that currentEntity isn't at bottom
-            if (eStacks[j].indexOf(currentEntity) != 0) {
-              // Slice from above the entity
+          // Check that currentEntity isn't at bottom
+          if (eStacks[j].indexOf(currentEntity) != 0) {
+            // Slice from above the entity
 
-              // Slice out objects above entity
-              var underEntity : string[] = eStacks[j].slice(0, eStacks[j].indexOf(currentEntity));
+            // Slice out objects above entity
+            var underEntity : string[] = eStacks.slice(0, eStacks.indexOf(currentEntity));
 
-              // Push to array
-              matchingEntities = matchingEntities.concat(underEntity);
-            }
+            // Push to array
+            matchingEntities = matchingEntities.concat(underEntity);
           }
+
         }
 
       } else if (loc.relation == "beside") {
@@ -411,23 +400,21 @@ module Interpreter {
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity,wStacks);
 
-          for(var j = 0; j < eStacks.length; j++){
-            // Find index of stack in the world
-            var indexOfStack = wStacks.indexOf(eStacks[j]);
-            var toLeft = indexOfStack - 1;
-            var toRight = indexOfStack + 1;
+          // Find index of stack in the world
+          var indexOfStack = wStacks.indexOf(eStacks);
+          var toLeft = indexOfStack - 1;
+          var toRight = indexOfStack + 1;
 
-            // If stack to left is not out of bounds
-            if(toLeft >= 0){
-              // Add to array
-              matchingEntities = matchingEntities.concat(wStacks[toLeft]);
-            }
+          // If stack to left is not out of bounds
+          if(toLeft >= 0){
+            // Add to array
+            matchingEntities = matchingEntities.concat(wStacks[toLeft]);
+          }
 
-            // If stack to right is not out of bounds
-            if(toRight <= wStacks.length){
-              // Add to array
-              matchingEntities = matchingEntities.concat(wStacks[toRight]);
-            }
+          // If stack to right is not out of bounds
+          if(toRight <= wStacks.length){
+            // Add to array
+            matchingEntities = matchingEntities.concat(wStacks[toRight]);
           }
         }
       } else if (loc.relation == "leftof") {
@@ -438,17 +425,15 @@ module Interpreter {
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity, wStacks);
 
-          //Go through all stacks entity is in
-          for(var j = 0; j < eStacks.length; j++){
-            // Find where the stack is in the world
-            var indexOfStack = wStacks.indexOf(eStacks[j]);
+          // Find where the stack is in the world
+          var indexOfStack = wStacks.indexOf(eStacks);
 
-            // For all stacks to the left (or before) the current stack
-            for(var k = 0; k < indexOfStack; k++){
-              // Add that stack to array
-              matchingEntities = matchingEntities.concat(wStacks[k]);
-            }
+          // For all stacks to the left (or before) the current stack
+          for(var k = 0; k < indexOfStack; k++){
+            // Add that stack to array
+            matchingEntities = matchingEntities.concat(wStacks[k]);
           }
+
         }
 
       } else if (loc.relation == "rightof") {
@@ -459,17 +444,15 @@ module Interpreter {
           // Get stacks that contain entity
           var eStacks = findStacks(currentEntity, wStacks);
 
-          //Go through all stacks entity is in
-          for(var j = 0; j < eStacks.length; j++){
-            // Find where the stack is in the world
-            var indexOfStack = wStacks.indexOf(eStacks[j]);
+          // Find where the stack is in the world
+          var indexOfStack = wStacks.indexOf(eStacks);
 
-            // For all stacks to the right (or after) the current stack
-            for(var k = indexOfStack+1; k < wStacks.length; k++){
-              // Add that stack to array
-              matchingEntities = matchingEntities.concat(wStacks[k]);
-            }
+          // For all stacks to the right (or after) the current stack
+          for(var k = indexOfStack+1; k < wStacks.length; k++){
+            // Add that stack to array
+            matchingEntities = matchingEntities.concat(wStacks[k]);
           }
+
         }
       } else {
         return null;
@@ -478,7 +461,7 @@ module Interpreter {
     }
 
     // Find and return all stacks that contain provided entity
-    function findStacks (ent : string, stacks : string[][]) : string[][]{
+    function findStacks (ent : string, stacks : string[][]) : string[]{
       var returnArray : string[][] = [];
 
       // Go through all stacks
@@ -486,10 +469,13 @@ module Interpreter {
         // If a stack contains the provided entity
         if(stacks[i].indexOf(ent) != -1) {
           // Add the stack to the array of matching stacks
-          returnArray.push(stacks[i]);
+          return stacks[i];
         }
       }
-      return returnArray;
+
+      // This should never happen as we always get
+      throw new Error("No mathcing stack");
+
     }
     //Find all objects in the world matching a objectdefinition.
     function interpretObject( obj : Parser.Object, state : WorldState) : string[]{
