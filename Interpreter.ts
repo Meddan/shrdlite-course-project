@@ -525,7 +525,7 @@ module Interpreter {
         //Objects that match the second (object)
         var objectStrings : string[]= interpretLocation(objloc, state);
         /*
-        //Intersection between objects that match the description and objects that are 
+        Intersection between objects that match the description and objects that are 
         at the correct location
         */
         var ansList = subjectStrings.filter(function(n) {
