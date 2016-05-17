@@ -30,10 +30,12 @@ module Interpreter {
     // exported functions, classes and interfaces/types
 
     /**
-    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of the command. No need to change this one.
+    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of 
+    *the command. No need to change this one.
     * @param parses List of parses produced by the Parser.
     * @param currentState The current state of the world.
-    * @returns Augments ParseResult with a list of interpretations. Each interpretation is represented by a list of Literals.
+    * @returns Augments ParseResult with a list of interpretations. Each interpretation is 
+    *represented by a list of Literals.
     */
     export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
         var errors : Error[] = [];
@@ -98,8 +100,8 @@ module Interpreter {
      * The core interpretation function. The code here is no longer a template!
      * It finds all possible objects referenced in the command, returning the possible
      * interpretations as a DNFFormula. See Readme for more information.
-     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type `Command`
-     * (as it has been parsed by the parser).
+     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type 
+     *`Command` (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
      * @returns A list of list of Literal, representing a formula in disjunctive normal form
      * (disjunction of conjunctions).
@@ -184,8 +186,8 @@ module Interpreter {
       }
 
       
-      //Beside, leftof and rightof are always allowed for objects that are not floors.
-      //floors are checked above, thus it is always true at this point. 
+      //Beside, leftof and rightof are always allowed for objects that are not floors. Floors are 
+      //checked above, thus it is always true at this point. 
       if (rel == "beside" || rel == "leftof" || rel == "rightof"){
         return true; 
       }
@@ -197,8 +199,10 @@ module Interpreter {
       var targetShape : string = state.objects[l].form;
 
       
-      //Checking for the "special" case when something is put under something else.
-      //Nothing more needs to be checked for "under", so we return after that. 
+      /*
+      Checking for the "special" case when something is put under something else. Nothing more 
+      needs to be checked for "under", so we return after that.
+      */ 
       if(rel == "under"){
         return !(objectShape == "ball" || (objectSize == "small" && targetSize == "large"));
       }
@@ -221,9 +225,8 @@ module Interpreter {
     }
 
     /*
-    Checks if the objects s and l are allowed to relate, where s is the object
-    to be moved and l is the object that it will be placed on or inside. 
-    Only these two relations are considered here.
+    Checks if the objects s and l are allowed to relate, where s is the object to be moved and l 
+    is the object that it will be placed on or inside. Only these two relations are considered here.
     */
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
       var objectSize : string = state.objects[s].size;
@@ -521,8 +524,10 @@ module Interpreter {
         var subjectStrings : string[]= interpretObject(objobj, state);
         //Objects that match the second (object)
         var objectStrings : string[]= interpretLocation(objloc, state);
-        //Intersection between objects that match the description
-        //and objects that are at the correct location
+        /*
+        //Intersection between objects that match the description and objects that are 
+        at the correct location
+        */
         var ansList = subjectStrings.filter(function(n) {
           return objectStrings.indexOf(n) != -1;
         });
