@@ -179,7 +179,10 @@ module Interpreter {
           }
           var interpretation : DNFFormula = [];
           for (var s of possibleObj){
-            interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
+            //Can't take floor
+            if(s != "floor"){
+              interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
+            }        
           }
           return interpretation;
         }
@@ -237,6 +240,7 @@ module Interpreter {
       return true;
     }
 
+    //Remove, perhaps.
     function allowedPhysics(s: string, l : string, state : WorldState) : boolean {
       var objectSize : string = state.objects[s].size;
       var targetSize : string = state.objects[l].size;
@@ -310,7 +314,7 @@ module Interpreter {
       var matchingEntities : string[] = [];
 
       //Enormous If-statement finding objects depending on their relation.
-      
+
       if(loc.relation == "above"){
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
