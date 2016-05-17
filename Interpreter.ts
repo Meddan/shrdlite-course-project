@@ -135,33 +135,9 @@ module Interpreter {
           for (var s of possibleObj){
             for (var l of relationObj){
               var objRel = cmdloc.relation;
-              console.log("Double loop with "+ s + " " + l + " " + objRel);
-              //Only objects actually being put on or inside each other needs to be checked here.
-              //Other than that, just add all combinations as possible interpretations.
-              if(allowedPhysics2(s, l, objRel, state)){
+              if(allowedPhysics(s, l, objRel, state)){
                 interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
               }
-              /*if (objRel == "ontop" || objRel == "inside"){
-                if(allowedPhysics(s, l, obj) && allowedRelation(s,l, state)){
-                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                }
-              } else if (objRel == "above") {
-                if(allowedPhysics(s,l, obj)){
-                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                }
-              } else if (objRel == "under"){
-                var objectSize : string = state.objects[s].size;
-                var targetSize : string = state.objects[l].size;
-                var objectShape : string = state.objects[s].form;
-
-                if(objectShape != "ball" && (objectSize == "small" && targetSize == "large")) {
-                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                }
-              } else {
-                if(s!=l){
-                  interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                }
-              } */
             }
           }
 
@@ -189,56 +165,55 @@ module Interpreter {
         }
     }
 
-    //Trying to feex
-    function allowedPhysics2(s: string, l : string, rel : string, state : WorldState){
+    //Checks for allowed relations between objects given the rules of worlds like these. 
+    function allowedPhysics(s: string, l : string, rel : string, state : WorldState){
       //moving the floor (or putting something under it) is not allowed.
       if(s == "floor"){
         return false;
       }
+
       //Only things on or above floor allowed, but anything is valid in that case.
       // Thus no further checks are needed if this is true.
       if(l == "floor"){
-        console.log("If l == floor check")
         return (rel == "ontop" || rel == "above");
       }
 
+      //Object can never relate to itself.
+      if(s == l){
+        return false;
+      }
+
+      
+      //Beside, leftof and rightof are always allowed for objects that are not floors.
+      //floors are checked above, thus it is always true at this point. 
+      if (rel == "beside" || rel == "leftof" || rel == "rightof"){
+        return true; 
+      }
+
+      //Declares variables for specific size- and shape checks. 
       var objectSize : string = state.objects[s].size;
       var targetSize : string = state.objects[l].size;
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
 
-
-
-      //Object can never relate to iteself.
-      if(s == l){
-        return false;
-      }
-
-      //beside, leftof and rightof are always allowed for objects that are not floors.
-      if (rel == "beside" || rel == "leftof" || rel == "rightof"){
-        return(s != "floor" && l != "floor")
-      }
-
-
-
+      
       //Checking for the "special" case when something is put under something else.
-      // Nothing more needs to be checked for "under", so we return.
+      //Nothing more needs to be checked for "under", so we return after that. 
       if(rel == "under"){
-        return (objectShape != "ball" && (objectSize == "large" && targetSize == "small"));
+        return !(objectShape == "ball" || (objectSize == "small" && targetSize == "large"));
       }
-
 
       //In contrast to "under", this is not allowed for any other relation still considered.
       if(objectSize == "large" && targetSize == "small"){
           return false;
       }
 
-      console.log("passed size check");
       //Balls can't support anything.
       if(targetShape == "ball"){
         return false;
       }
 
+      //Specific checks for "ontop" and "inside".
       if(rel != "above"){
         return allowedRelation(s, l, state);
       }
@@ -247,7 +222,8 @@ module Interpreter {
 
     /*
     Checks if the objects s and l are allowed to relate, where s is the object
-    to be moved and l is the object that it will be placed on
+    to be moved and l is the object that it will be placed on or inside. 
+    Only these two relations are considered here.
     */
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
       var objectSize : string = state.objects[s].size;
@@ -282,6 +258,7 @@ module Interpreter {
 
       return true;
     }
+
     function interpretEntity(ent : Parser.Entity, state : WorldState) : string[] {
         if(ent.quantifier == "the" || ent.quantifier == "any"){
           return interpretObject(ent.object, state);
