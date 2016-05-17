@@ -280,23 +280,32 @@ module Interpreter {
       if(loc.relation == "above"){
         // Go through all entities we have found
         for(var i = 0; i < relationEntities.length; i++){
+
           var currentEntity : string = relationEntities[i];
 
-          // Get stacks that contain entity
-          var eStacks = findStacks(currentEntity, wStacks);
+          // If currentEntity is not floor
+          if(currentEntity != "floor"){
+            // Get stacks that contain entity
+            var eStacks = findStacks(currentEntity, wStacks);
 
-          // Check that it is not top of the stack
-          if (eStacks.indexOf(currentEntity) != eStacks.length){
-            // If it is not, push it to matching entities
+            // Check that it is not top of the stack
+            if (eStacks.indexOf(currentEntity) != eStacks.length){
+              // If it is not, push it to matching entities
 
-            // Slice from above the entity
-            var objIndex : number = eStacks.indexOf(currentEntity) + 1;
+              // Slice from above the entity
+              var objIndex : number = eStacks.indexOf(currentEntity) + 1;
 
-            // Slice out objects above entity
-            var aboveEntity : string[] = eStacks.slice(objIndex);
+              // Slice out objects above entity
+              var aboveEntity : string[] = eStacks.slice(objIndex);
 
-            // Push to array
-            matchingEntities = matchingEntities.concat(aboveEntity);
+              // Push to array
+              matchingEntities = matchingEntities.concat(aboveEntity);
+            }
+          } else { // If currentEntity is floor
+            // Add all objects to matching entities as all objects are above the floor
+            for(var j = 0; j < wStacks.length; j++){
+              matchingEntities = matchingEntities.concat(wStacks[j]);
+            }
           }
         }
       } else if (loc.relation == "ontop") {
