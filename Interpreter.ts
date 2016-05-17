@@ -135,6 +135,7 @@ module Interpreter {
           for (var s of possibleObj){
             for (var l of relationObj){
               var objRel = cmdloc.relation;
+              console.log("Double loop with "+ s + " " + l + " " + objRel);
               //Only objects actually being put on or inside each other needs to be checked here.
               //Other than that, just add all combinations as possible interpretations.
               if(allowedPhysics2(s, l, objRel, state)){
@@ -147,7 +148,7 @@ module Interpreter {
               } else if (objRel == "above") {
                 if(allowedPhysics(s,l, obj)){
                   interpretation.push([{polarity: true, relation: objRel, args: [s,l]}]);
-                } 
+                }
               } else if (objRel == "under"){
                 var objectSize : string = state.objects[s].size;
                 var targetSize : string = state.objects[l].size;
@@ -182,7 +183,7 @@ module Interpreter {
             //Can't take floor
             if(s != "floor"){
               interpretation.push([{polarity: true, relation: "holding", args: [s]}]);
-            }        
+            }
           }
           return interpretation;
         }
@@ -190,76 +191,60 @@ module Interpreter {
 
     //Trying to feex
     function allowedPhysics2(s: string, l : string, rel : string, state : WorldState){
+      //moving the floor (or putting something under it) is not allowed.
+      if(s == "floor"){
+        return false;
+      }
+      //Only things on or above floor allowed, but anything is valid in that case.
+      // Thus no further checks are needed if this is true.
+      if(l == "floor"){
+        console.log("If l == floor check")
+        return (rel == "ontop" || rel == "above");
+      }
+
       var objectSize : string = state.objects[s].size;
       var targetSize : string = state.objects[l].size;
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
+
+
 
       //Object can never relate to iteself.
       if(s == l){
         return false;
       }
 
-      //beside, leftof and rightof are always allowed for objects that are not floors. 
+      //beside, leftof and rightof are always allowed for objects that are not floors.
       if (rel == "beside" || rel == "leftof" || rel == "rightof"){
         return(s != "floor" && l != "floor")
       }
 
-      //moving the floor (or putting something under it) is not allowed. 
-      if(s == "floor"){
-        return false;
-      }
 
-      //Only things on or above floor allowed, but anything is valid in that case.
-      // Thus no further checks are needed if this is true. 
-      if(l == "floor"){
-        return (rel == "ontop" || rel == "above");
-      }
 
-      //Checking for the "special" case when something is put under something else. 
-      // Nothing more needs to be checked for "under", so we return. 
+      //Checking for the "special" case when something is put under something else.
+      // Nothing more needs to be checked for "under", so we return.
       if(rel == "under"){
         return (objectShape != "ball" && (objectSize == "large" && targetSize == "small"));
       }
 
-      //Remanining relations: "ontop", "above", "inside". 
 
-      //In contrast to "under", this is not allowed for any other relation still considered. 
+      //In contrast to "under", this is not allowed for any other relation still considered.
       if(objectSize == "large" && targetSize == "small"){
           return false;
       }
 
+      console.log("passed size check");
       //Balls can't support anything.
       if(targetShape == "ball"){
-        return false; 
+        return false;
       }
 
       if(rel != "above"){
-        return allowedRelations(s, l, state);
+        return allowedRelation(s, l, state);
       }
       return true;
     }
 
-    //Remove, perhaps.
-    function allowedPhysics(s: string, l : string, state : WorldState) : boolean {
-      var objectSize : string = state.objects[s].size;
-      var targetSize : string = state.objects[l].size;
-      var objectShape : string = state.objects[s].form;
-      var targetShape : string = state.objects[l].form;
-
-      if (s == l){
-        return false;
-      }
-      //No large objects on small ones in any way.
-      if(objectSize == "large" && targetSize == "small"){
-          return false;
-      }
-
-      //Balls can't support anything
-      if(targetShape == "ball"){
-        return false; 
-      }
-    }
     /*
     Checks if the objects s and l are allowed to relate, where s is the object
     to be moved and l is the object that it will be placed on
