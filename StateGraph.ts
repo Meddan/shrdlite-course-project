@@ -10,7 +10,7 @@ class StateNode {
         public state : WorldState
     ) {}
 
-    add(action : String) : GridNode {
+    add(action : String) : StateNode {
         /*return new GridNode({
             x: this.pos.x + delta.x,
             y: this.pos.y + delta.y
