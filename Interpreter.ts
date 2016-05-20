@@ -30,11 +30,11 @@ module Interpreter {
     // exported functions, classes and interfaces/types
 
     /**
-    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of 
+    Top-level function for the Interpreter. It calls `interpretCommand` for each possible parse of
     *the command. No need to change this one.
     * @param parses List of parses produced by the Parser.
     * @param currentState The current state of the world.
-    * @returns Augments ParseResult with a list of interpretations. Each interpretation is 
+    * @returns Augments ParseResult with a list of interpretations. Each interpretation is
     *represented by a list of Literals.
     */
     export function interpret(parses : Parser.ParseResult[], currentState : WorldState) : InterpretationResult[] {
@@ -100,11 +100,11 @@ module Interpreter {
      * The core interpretation function. The code here is no longer a template!
      * It finds all possible objects referenced in the command, returning the possible
      * interpretations as a DNFFormula. See Readme for more information.
-     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type 
+     * @param cmd The actual command. Note that it is *not* a string, but rather an object of type
      *`Command` (as it has been parsed by the parser).
      * @param state The current state of the world. Useful to look up objects in the world.
-     * @returns A list of list of Literal, representing a formula in disjunctive normal form
-     * (disjunction of conjunctions).
+     * @returns A list of list of Literal, representing a formula in disjunctive normal form (disjunction of conjunctions). See the dummy interpetation returned in the code for an example, which means ontop(a,floor) AND holding(b).
+     * @throws An error when no valid interpretations can be found
      */
     function interpretCommand(cmd : Parser.Command, state : WorldState) : DNFFormula {
         // This returns a dummy interpretation involving two random objects in the world
@@ -167,7 +167,7 @@ module Interpreter {
         }
     }
 
-    //Checks for allowed relations between objects given the rules of worlds like these. 
+    //Checks for allowed relations between objects given the rules of worlds like these.
     function allowedPhysics(s: string, l : string, rel : string, state : WorldState){
       //moving the floor (or putting something under it) is not allowed.
       if(s == "floor"){
@@ -185,24 +185,24 @@ module Interpreter {
         return false;
       }
 
-      
-      //Beside, leftof and rightof are always allowed for objects that are not floors. Floors are 
-      //checked above, thus it is always true at this point. 
+
+      //Beside, leftof and rightof are always allowed for objects that are not floors. Floors are
+      //checked above, thus it is always true at this point.
       if (rel == "beside" || rel == "leftof" || rel == "rightof"){
-        return true; 
+        return true;
       }
 
-      //Declares variables for specific size- and shape checks. 
+      //Declares variables for specific size- and shape checks.
       var objectSize : string = state.objects[s].size;
       var targetSize : string = state.objects[l].size;
       var objectShape : string = state.objects[s].form;
       var targetShape : string = state.objects[l].form;
 
-      
+
       /*
-      Checking for the "special" case when something is put under something else. Nothing more 
+      Checking for the "special" case when something is put under something else. Nothing more
       needs to be checked for "under", so we return after that.
-      */ 
+      */
       if(rel == "under"){
         return !(objectShape == "ball" || (objectSize == "small" && targetSize == "large"));
       }
@@ -225,7 +225,7 @@ module Interpreter {
     }
 
     /*
-    Checks if the objects s and l are allowed to relate, where s is the object to be moved and l 
+    Checks if the objects s and l are allowed to relate, where s is the object to be moved and l
     is the object that it will be placed on or inside. Only these two relations are considered here.
     */
     function allowedRelation(s : string, l : string, state : WorldState) : boolean {
@@ -525,7 +525,7 @@ module Interpreter {
         //Objects that match the second (object)
         var objectStrings : string[]= interpretLocation(objloc, state);
         /*
-        Intersection between objects that match the description and objects that are 
+        Intersection between objects that match the description and objects that are
         at the correct location
         */
         var ansList = subjectStrings.filter(function(n) {
