@@ -7,7 +7,7 @@
 
 class StateNode {
     constructor(
-        public state : WorldState
+        public state : PlannerTextWorld
     ) {}
 
     add(action : String) : StateNode {
@@ -25,7 +25,7 @@ class StateNode {
     }
 
     toString() : string {
-        return this.state.toString();
+        return this.state.currentState.toString();
     }
 }
 

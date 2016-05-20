@@ -3,25 +3,25 @@ class PlannerTextWorld extends TextWorld {
         super(currentState);
     }
 
-    public leftClone() : WorldState {
+    public leftClone() : PlannerTextWorld {
         if (this.currentState.arm <= 0) {
             throw "already at edge!";
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm--;
-        return newWorld;
+        return new PlannerTextWorld(newWorld);
     }
 
-    public rightClone() : WorldState {
+    public rightClone() : PlannerTextWorld {
         if (this.currentState.arm >= this.currentState.stacks.length - 1) {
             throw "already at edge!";
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm++;
-        return newWorld;
+        return new PlannerTextWorld(newWorld);
     }
 
-    public pickClone() : WorldState {
+    public pickClone() : PlannerTextWorld {
         if (this.currentState.holding) {
             throw "already holding something"
         }
@@ -32,10 +32,10 @@ class PlannerTextWorld extends TextWorld {
             throw "Stack is empty!";
         }
         newWorld.holding = newWorld.stacks[stack].pop();
-        return newWorld;
+        return new PlannerTextWorld(newWorld);
     }
 
-    public dropClone() : WorldState {
+    public dropClone() : PlannerTextWorld {
         if (!this.currentState.holding) {
             throw "Not holding anything!";
         }
@@ -43,6 +43,6 @@ class PlannerTextWorld extends TextWorld {
         var stack = newWorld.arm;
         newWorld.stacks[stack].push(newWorld.holding);
         newWorld.holding = null;
-        return newWorld;
+        return new PlannerTextWorld(newWorld);
     }
 }
