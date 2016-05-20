@@ -25,7 +25,7 @@ class StateNode {
     }
 
     toString() : string {
-        return state.toString;
+        return this.state.toString();
     }
 }
 
