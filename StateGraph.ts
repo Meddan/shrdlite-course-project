@@ -49,7 +49,7 @@ class StateGraph implements Graph<StateNode> {
         return a.compareTo(b);
     }
 
-    toString(start? : GridNode, goal? : (n:GridNode) => boolean, path? : GridNode[]) : string {
+    toString(start? : StateNode, goal? : (n:StateNode) => boolean, path? : StateNode[]) : string {
         return "nope";
     }
 }
