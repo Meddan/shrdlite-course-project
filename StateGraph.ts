@@ -33,7 +33,7 @@ class StateNode {
 class StateGraph implements Graph<StateNode> {
 
     constructor(
-      startingState : WorldState
+      startingState : PlannerTextWorld
       //some form of representing the endstate
     ) {
       //shit to do in constructor goes here
