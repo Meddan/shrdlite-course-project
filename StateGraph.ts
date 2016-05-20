@@ -42,6 +42,9 @@ class StateGraph implements Graph<StateNode> {
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
         var outgoing : Edge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
+        //Left
+        //Right
+        //Pick / Drop
         return outgoing;
     }
 
@@ -51,5 +54,9 @@ class StateGraph implements Graph<StateNode> {
 
     toString(start? : StateNode, goal? : (n:StateNode) => boolean, path? : StateNode[]) : string {
         return "nope";
+    }
+    heuristic(node : StateNode) : number {
+      //Needs to have a good way of calculating the differance between the given nodes state and the final state.
+      return 0;
     }
 }
