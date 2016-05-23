@@ -63,7 +63,6 @@ function aStarSearch<Node>
         cost: 0
     };
     let startTime = new Date().getTime();
-    //let closedSet : collections.Set<Node> = new collections.Set<Node>();
     let openSet : collections.Set<Node> = new collections.Set<Node>();
     let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>();
     let gScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
@@ -92,17 +91,15 @@ function aStarSearch<Node>
           return(result);
         }
         openSet.remove(current);
-        //closedSet.add(current);
         //Find all neighbours to current
         let listOfEdges : Edge<Node>[] = graph.outgoingEdges(current);
         for(var e of listOfEdges){
           var n = e.to;
-          //if(closedSet.contains(n)) {
-          //  continue
-          //}
+          //Calculate the cost of the path to the neighbour
           let tentative_gScore : number = lookup(gScore, current) + e.cost;
-          //We find a new node
+          //We find a new node or a better path to a node previously discovered.
           if(tentative_gScore < lookup(gScore, n)){
+            //Add it to the nodes to be explored and set values.
             openSet.add(n)
             cameFrom.setValue(n,current);
             gScore.setValue(n,tentative_gScore)
