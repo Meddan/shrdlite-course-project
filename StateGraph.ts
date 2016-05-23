@@ -56,7 +56,16 @@ class StateGraph implements Graph<StateNode> {
         return "nope";
     }
     heuristic(node : StateNode) : number {
-      //Needs to have a good way of calculating the differance between the given nodes state and the final state.
+      //Difference from object to subject
+      //Return same if ontop, inside, above, below
+      //Return distance -1 if beside
+      var plannerState : PlannerTextWorld = node.state;
+      var currentState : WorldState = plannerState.currentState;
+      var r = plannerState.relation;
+      if(r == "ontop" || r == "inside" || r == "above" || r == "under"){
+
+      }
+
       return 0;
     }
 }
