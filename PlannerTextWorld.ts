@@ -1,5 +1,7 @@
 class PlannerTextWorld extends TextWorld {
-    constructor(public currentState : WorldState) {
+
+    constructor(public currentState : WorldState, public relation: string,
+      public object : string, public subject : string) {
         super(currentState);
     }
 
@@ -9,7 +11,7 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm--;
-        return new PlannerTextWorld(newWorld);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public rightClone() : PlannerTextWorld {
@@ -18,7 +20,7 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm++;
-        return new PlannerTextWorld(newWorld);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public pickClone() : PlannerTextWorld {
@@ -32,7 +34,7 @@ class PlannerTextWorld extends TextWorld {
             throw "Stack is empty!";
         }
         newWorld.holding = newWorld.stacks[stack].pop();
-        return new PlannerTextWorld(newWorld);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public dropClone() : PlannerTextWorld {
@@ -43,6 +45,6 @@ class PlannerTextWorld extends TextWorld {
         var stack = newWorld.arm;
         newWorld.stacks[stack].push(newWorld.holding);
         newWorld.holding = null;
-        return new PlannerTextWorld(newWorld);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 }
