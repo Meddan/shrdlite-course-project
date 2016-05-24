@@ -105,14 +105,22 @@ class StateGraph implements Graph<StateNode> {
       var subject = literal.args[1]; //For "drop" this might not exist
 
       var distance : number = this.findDistance(currentState, object, subject);
-      if(r == "ontop" || r == "inside" || r == "above" || r == "under"){
-        return Math.abs(distance);
+      if(r == "ontop" || r == "inside"){
+        return Math.abs(distance) +
+          this.findStackHeuristic(currentState, object) +
+          this.findStackHeuristic(currentState, subject);
+      } else if(r == "above"){
+          return Math.abs(distance) +
+            this.findStackHeuristic(currentState, object);
+      } else if (r == "below"){
+        return Math.abs(distance) +
+          this.findStackHeuristic(currentState, subject);
       } else if(r == "beside"){
-        return Math.abs(distance) - 1;
+          return Math.abs(distance) - 1;
       } else if (r == "rightof"){
         //object to left of subject
-        if(distance < 0) {
-          return Math.abs(distance) + 1;
+          if(distance < 0) {
+            return Math.abs(distance) + 1;
           //object already to right of subject
         } else if (distance > 0){
           return 0;
@@ -133,7 +141,10 @@ class StateGraph implements Graph<StateNode> {
     //Returns which position the object has in its stack,
     //starting from the top with index 0
     //This is not as usual, but used for heuristics
-    findStackPos(state : WorldState, obj : string) : number{
+    findStackHeuristic(state : WorldState, obj : string) : number{
+      if(state.holding == "obj"){
+        return 0; //Is 0 if we hold that shit already
+      }
       var stack = state.stacks[this.findStackNbr(state, obj)];
       //längst ner = först
       for(var i = 0; i < stack.length; i ++){
