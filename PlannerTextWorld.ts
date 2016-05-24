@@ -43,8 +43,82 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = this.currentState;
         var stack = newWorld.arm;
+        var holding = newWorld.holding;
+        if(newWorld.stacks[stack] == []){
+          //EMPTY STACK WE HAVE FLOOR
+        }
+
         newWorld.stacks[stack].push(newWorld.holding);
         newWorld.holding = null;
         return new PlannerTextWorld(newWorld, this.formula);
     }
+    public allowedPhysics(s: string, l : string, rel : string, state : WorldState) : boolean{
+      //moving the floor (or putting something under it) is not allowed.
+      if(s == "floor"){
+        return false;
+      }
+
+      //Only things on or above floor allowed, but anything is valid in that case.
+      // Thus no further checks are needed if this is true.
+      if(l == "floor"){
+        return (rel == "ontop" || rel == "above");
+      }
+
+      //Object can never relate to itself.
+      if(s == l){
+        return false;
+      }
+
+
+      //Beside, leftof and rightof are always allowed for objects that are not floors. Floors are
+      //checked above, thus it is always true at this point.
+      if (rel == "beside" || rel == "leftof" || rel == "rightof"){
+        return true;
+      }
+
+      //Declares variables for specific size- and shape checks.
+      var objectSize : string = state.objects[s].size;
+      var targetSize : string = state.objects[l].size;
+      var objectShape : string = state.objects[s].form;
+      var targetShape : string = state.objects[l].form;
+
+
+      /*
+      Checking for the "special" case when something is put under something else. Nothing more
+      needs to be checked for "under", so we return after that.
+      */
+      if(rel == "under"){
+        return !(objectShape == "ball" || (objectSize == "small" && targetSize == "large"));
+      }
+
+      //In contrast to "under", this is not allowed for any other relation still considered.
+      if(objectSize == "large" && targetSize == "small"){
+          return false;
+      }
+
+      //Balls can't support anything.
+      if(targetShape == "ball"){
+        return false;
+      }
+
+      //Specific checks for "ontop" and "inside".
+      if(rel != "above"){
+        return allowedRelation(s, l, state);
+      }
+      return true;
+    }
+    allowedRelation(s : string, l : string, state : WorldState) : boolean {
+      var objectSize : string = state.objects[s].size;
+      var targetSize : string = state.objects[l].size;
+      var objectShape : string = state.objects[s].form;
+      var targetShape : string = state.objects[l].form;
+
+      //Boxes cannot contain pyramids, planks or boxes of the same size.
+      if(targetShape == "box"){
+         if(objectShape == "pyramid" || objectShape == "box" || objectShape == "plank"){
+            if(!(targetSize == "large" && objectSize == "small")){
+              return false;
+            }
+         }
+      }
 }
