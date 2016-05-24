@@ -1,10 +1,10 @@
+/// <reference path="./TextWorld.ts"/>
 class PlannerTextWorld extends TextWorld {
 
     constructor(public currentState : WorldState, public relation: string,
       public object : string, public subject : string) {
         super(currentState);
     }
-
     public leftClone() : PlannerTextWorld {
         if (this.currentState.arm <= 0) {
             throw "already at edge!";
@@ -149,6 +149,6 @@ class PlannerTextWorld extends TextWorld {
         return !(targetShape == "pyramid");
       }
 
-      return true;    
+      return true;
     }
   }

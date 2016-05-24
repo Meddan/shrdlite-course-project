@@ -43,8 +43,42 @@ class StateGraph implements Graph<StateNode> {
         var outgoing : Edge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
         //Left
+        var newNode : StateNode;
+        try {
+          newNode = new StateNode(node.state.leftClone())
+          outgoing.push({
+              from: node,
+              to: newNode,
+              cost: 1
+          });
+        } catch(Error){}
         //Right
-        //Pick / Drop
+        try {
+          newNode = new StateNode(node.state.rightClone())
+          outgoing.push({
+              from: node,
+              to: newNode,
+              cost: 1
+          });
+        } catch(Error){}
+        //Pick
+        try {
+          newNode = new StateNode(node.state.pickClone())
+          outgoing.push({
+              from: node,
+              to: newNode,
+              cost: 1
+          });
+        } catch(Error){}
+        //Drop
+        try {
+          newNode = new StateNode(node.state.dropClone())
+          outgoing.push({
+              from: node,
+              to: newNode,
+              cost: 1
+          });
+        } catch(Error){}
         return outgoing;
     }
 
