@@ -1,7 +1,7 @@
 class PlannerTextWorld extends TextWorld {
 
-    constructor(public currentState : WorldState,
-      public formula : Interpreter.DNFFormula) {
+    constructor(public currentState : WorldState, public relation: string,
+      public object : string, public subject : string) {
         super(currentState);
     }
 
@@ -11,7 +11,7 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm--;
-        return new PlannerTextWorld(newWorld, this.formula);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public rightClone() : PlannerTextWorld {
@@ -20,7 +20,7 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = this.currentState;
         newWorld.arm++;
-        return new PlannerTextWorld(newWorld, this.formula);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public pickClone() : PlannerTextWorld {
@@ -34,7 +34,7 @@ class PlannerTextWorld extends TextWorld {
             throw "Stack is empty!";
         }
         newWorld.holding = newWorld.stacks[stack].pop();
-        return new PlannerTextWorld(newWorld,this.formula);
+        return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
     }
 
     public dropClone() : PlannerTextWorld {
@@ -46,11 +46,23 @@ class PlannerTextWorld extends TextWorld {
         var holding = newWorld.holding;
         if(newWorld.stacks[stack] == []){
           //EMPTY STACK WE HAVE FLOOR
+          if(this.allowedPhysics( holding,"floor", "ontop", newWorld)){
+            newWorld.stacks[stack].push(newWorld.holding);
+            newWorld.holding = null;
+            return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
+          } else {
+            throw new Error("what is going on, can't place on floor")
+          }
+        } else {
+          var topOfStack = newWorld.stacks[stack][-1];
+          if(this.allowedPhysics( holding,topOfStack, "ontop", newWorld)){
+            newWorld.stacks[stack].push(newWorld.holding);
+            newWorld.holding = null;
+            return new PlannerTextWorld(newWorld, this.relation, this.object, this.subject);
+          } else {
+            throw new Error("We cannot drop here")
+          }
         }
-
-        newWorld.stacks[stack].push(newWorld.holding);
-        newWorld.holding = null;
-        return new PlannerTextWorld(newWorld, this.formula);
     }
     public allowedPhysics(s: string, l : string, rel : string, state : WorldState) : boolean{
       //moving the floor (or putting something under it) is not allowed.
@@ -103,7 +115,7 @@ class PlannerTextWorld extends TextWorld {
 
       //Specific checks for "ontop" and "inside".
       if(rel != "above"){
-        return allowedRelation(s, l, state);
+        return this.allowedRelation(s, l, state);
       }
       return true;
     }
@@ -121,4 +133,5 @@ class PlannerTextWorld extends TextWorld {
             }
          }
       }
-}
+    }
+  }
