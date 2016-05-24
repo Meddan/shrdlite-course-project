@@ -32,34 +32,19 @@ class StateNode {
 
 class StateGraph implements Graph<StateNode> {
 
-    constructor() {
+    constructor(
+      startingState : PlannerTextWorld
+      //some form of representing the endstate
+    ) {
       //shit to do in constructor goes here
      }
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
         var outgoing : Edge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
-        var newNode : StateNode;
         //Left
-        try {
-          newNode = new StateNode(node.state.leftClone())
-          outgoing.concat([newNode])
-        } catch(Error){}
         //Right
-        try {
-          newNode = new StateNode(node.state.rightClone())
-          outgoing.concat([newNode])
-        } catch(Error){}
-        //Pick
-        try {
-          newNode = new StateNode(node.state.pickClone())
-          outgoing.concat([newNode])
-        } catch(Error){}
-        //Drop
-        try {
-          newNode = new StateNode(node.state.dropClone())
-          outgoing.concat([newNode])
-        } catch(Error){}
+        //Pick / Drop
         return outgoing;
     }
 
@@ -76,8 +61,16 @@ class StateGraph implements Graph<StateNode> {
       //Return distance -1 if beside
       var plannerState : PlannerTextWorld = node.state;
       var currentState : WorldState = plannerState.currentState;
-      var r = plannerState.relation;
-      var distance : number = this.findDistance(currentState, plannerState.object, plannerState.subject);
+      //This only takes one single disjunction right now
+      var literal : Interpreter.Literal = plannerState.formula[0][0];
+      var r = literal.relation;
+      if(r == "holding"){
+        return 0 //TODO: Some holding heuristic for holding some shit
+      }
+      var object = literal.args[0];
+      var subject = literal.args[1]; //For "drop" this might not exist
+
+      var distance : number = this.findDistance(currentState, object, subject);
       if(r == "ontop" || r == "inside" || r == "above" || r == "under"){
         return Math.abs(distance);
       } else if(r == "beside"){
@@ -103,24 +96,43 @@ class StateGraph implements Graph<StateNode> {
       return 0;
     }
 
-    findDistance(state : WorldState, obj : string, subj : string) : number {
+    //Returns which position the object has in its stack,
+    //starting from the top with index 0
+    //This is not as usual, but used for heuristics
+    findStackPos(state : WorldState, obj : string) : number{
+      var stack = state.stacks[this.findStackNbr(state, obj)];
+      //längst ner = först
+      for(var i = 0; i < stack.length; i ++){
+        if(stack[i] == obj){
+          return stack.length - 1 - i;
+        }
+      }
+      return 0;
+
+    }
+
+    //returns the number of the stack containing the given object.
+    findStackNbr(state : WorldState, obj : string) : number {
       var stacks = state.stacks;
-      var objStack : number;
-      var subjStack : number;
       for(var i = 0; i < stacks.length; i++){
         // If a stack contains the provided entity
         if(stacks[i].indexOf(obj) != -1) {
-          objStack = stacks[i].indexOf(obj);
-          break;
+          return i;
         }
       }
-      for(var i = 0; i < stacks.length; i++){
-        // If a stack contains the provided entity
-        if(stacks[i].indexOf(subj) != -1) {
-          subjStack = stacks[i].indexOf(subj);
-          break;
-        }
-      }
-      return objStack - subjStack;
+      return -1; //Element not found
     }
+
+    //Returns distance between object and subject. Positive if
+    //object is to the right of subjects.
+    findDistance(state : WorldState, obj : string, subj : string) : number {
+      //Check if we holding dbject or subject
+      if(state.holding == obj){
+        return state.arm - this.findStackNbr(state, subj);
+      } else if (state.holding == subj){
+        return this.findStackNbr(state, obj) - state.arm;
+      }
+      return this.findStackNbr(state, obj) - this.findStackNbr(state, subj);
+    }
+
 }
