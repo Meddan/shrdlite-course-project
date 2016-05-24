@@ -133,5 +133,22 @@ class PlannerTextWorld extends TextWorld {
             }
          }
       }
+      //Balls may only be placed on the floor or in box
+      if(objectShape == "ball" && !(targetShape == "floor" || targetShape == "box")){
+        return false
+      }
+
+      //Small boxes cannot be supported by small bricks or pyramids.
+      if(objectShape == "box" && objectSize == "small"){
+        if(targetSize == "small" && (targetShape == "pyramid" || targetShape == "brick")){
+          return false;
+        }
+      }
+      //Large boxes cannot be supported by large pyramids.
+      if(objectSize == "large" && objectShape == "box"){
+        return !(targetShape == "pyramid");
+      }
+
+      return true;    
     }
   }
