@@ -32,19 +32,34 @@ class StateNode {
 
 class StateGraph implements Graph<StateNode> {
 
-    constructor(
-      startingState : PlannerTextWorld
-      //some form of representing the endstate
-    ) {
+    constructor() {
       //shit to do in constructor goes here
      }
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
         var outgoing : Edge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
+        var newNode : StateNode;
         //Left
+        try {
+          newNode = new StateNode(node.state.leftClone())
+          outgoing.concat([newNode])
+        } catch(Error){}
         //Right
-        //Pick / Drop
+        try {
+          newNode = new StateNode(node.state.rightClone())
+          outgoing.concat([newNode])
+        } catch(Error){}
+        //Pick
+        try {
+          newNode = new StateNode(node.state.pickClone())
+          outgoing.concat([newNode])
+        } catch(Error){}
+        //Drop
+        try {
+          newNode = new StateNode(node.state.dropClone())
+          outgoing.concat([newNode])
+        } catch(Error){}
         return outgoing;
     }
 
@@ -83,7 +98,7 @@ class StateGraph implements Graph<StateNode> {
         } else if (distance > 0){
           return Math.abs(distance) + 1;
         }
-      }    
+      }
       //This should not happen, but if it does...
       return 0;
     }
