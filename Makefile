@@ -25,6 +25,9 @@ aStarTests: TestAStar.js
 interpretationTests: TestInterpreter.js
 	node $< all
 
+goalTest: testIsGoal.js
+	node $< all
+
 # Make TypeScript as strict as possible:
 TSC = tsc --noFallthroughCasesInSwitch --noImplicitReturns --noImplicitAny
 
