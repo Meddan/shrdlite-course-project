@@ -1,8 +1,137 @@
 /// <reference path="./TextWorld.ts"/>
+///<reference path="Interpreter.ts"/>
+
 class PlannerTextWorld extends TextWorld {
 
     constructor(public currentState : WorldState, public formula : Interpreter.DNFFormula) {
         super(currentState);
+        // Text world deletes holding in constructor
+    }
+
+    public isGoal() : boolean {
+
+      // Go through all conjunctions
+      for(var i = 0; i < this.formula.length; i++){
+        // Get current conjunction
+        var currentConjunction : Interpreter.Literal[] = this.formula[i];
+
+        var correctLiterals = 0;
+        //Go through all literals in conjunction
+        for(var j = 0; j < currentConjunction.length; j++){
+            // Get current literal
+            var currentLiteral : Interpreter.Literal = currentConjunction[j];
+
+            var pol : boolean = currentLiteral.polarity;
+            var rel : string = currentLiteral.relation;
+            var args : string[] = currentLiteral.args;
+            var wStacks = this.currentState.stacks;
+
+            if(rel == "inside"){
+                var stack = this.findStacks(args[1], wStacks);
+                // If the object above in the stack matches the object that
+                // should be inside AND that bool matches the polarity, we all good
+                if(!((stack[stack.indexOf(args[1]) + 1]) == (args[0])) == (pol)){
+                    break;
+                }
+            } else if(rel == "ontop"){
+                if(args[1] == "floor"){
+                    var stack = this.findStacks(args[0], wStacks);
+                    // Check if thingy is on floor
+                    if(!(stack.indexOf(args[0]) == 0) == pol){
+                        break;
+                    }
+                }
+            } else if (rel == "under") {
+                var stack = this.findStacks(args[1], wStacks);
+
+                // If args[0] is below args[1] and actually is in stack, we all good
+                if(!(stack.indexOf(args[0]) < stack.indexOf(args[1])) == (pol)
+                    && (stack.indexOf(args[0]) != -1)){
+                    break;
+                }
+            } else if (rel == "above") {
+                var stack = this.findStacks(args[1], wStacks);
+
+                // If args[0] is above args[1] and actually is in stack, we all good
+                if(!(stack.indexOf(args[0]) > stack.indexOf(args[1])) == (pol)
+                    && (stack.indexOf(args[0]) != -1)){
+                    break;
+                }
+            } else if (rel == "beside") {
+                var stack = this.findStacks(args[1], wStacks);
+
+                // Using ternary magic
+                // If the index of the stack to the right of args[1] is equal to
+                // the length of the list of stacks, args[0] cannot be to the
+                // right of it and thus returns false, otherwise it checks the
+                // stack to the right to see if it contains args[0]
+                //
+                // Works similarily for stacks to the left
+                //
+                // Only if both of these are false do we break, otherwise we gucci
+                if(!(((wStacks.indexOf(stack) + 1) == wStacks.length ?
+                        false :
+                        wStacks[wStacks.indexOf(stack) + 1].indexOf(args[0]) != -1)
+                        == pol
+                    || ((wStacks.indexOf(stack) - 1) == -1 ?
+                        false :
+                        wStacks[wStacks.indexOf(stack) - 1].indexOf(args[0]) != -1)
+                        == pol)
+                        ) {
+                        break;
+                    }
+
+            } else if (rel == "leftof"){
+                var stack = this.findStacks(args[1], wStacks);
+                var otherStack = this.findStacks(args[0], wStacks);
+
+                // If args[0] is in stack to left of args[1]
+                if(!(wStacks.indexOf(stack) > wStacks.indexOf(otherStack)) == pol){
+                    break;
+                }
+
+            } else if (rel == "rightof"){
+                var stack = this.findStacks(args[1], wStacks);
+                var otherStack = this.findStacks(args[0], wStacks);
+
+                // If args[0] is in stack to right of args[1]
+                if(!(wStacks.indexOf(stack) < wStacks.indexOf(otherStack)) == pol){
+                    break;
+                }
+            } else if (rel == "holding"){
+                if(!(this.currentState.holding == args[0]) == pol){
+                    break;
+                }
+            }
+
+            correctLiterals++;
+
+        } // End literal loop
+
+        if(correctLiterals == currentConjunction.length){
+            return true;
+        }
+      }
+
+      return false;
+    }
+
+    // Find and return all stacks that contain provided entity
+    private findStacks (ent : string, stacks : string[][]) : string[]{
+      var returnArray : string[][] = [];
+
+      // Go through all stacks
+      for(var i = 0; i < stacks.length; i++){
+        // If a stack contains the provided entity
+        if(stacks[i].indexOf(ent) != -1) {
+          // Add the stack to the array of matching stacks
+          return stacks[i];
+        }
+      }
+
+      // This should never happen as we always get
+      throw new Error("No mathcing stack");
+
     }
     public leftClone() : PlannerTextWorld {
         if (this.currentState.arm <= 0) {
