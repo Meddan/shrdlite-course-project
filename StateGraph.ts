@@ -148,12 +148,16 @@ class StateGraph implements Graph<StateNode> {
       var subject = literal.args[1]; //For
 
       var distance : number = findDistance(currentState, object, subject);
+
       if(r == "ontop" || r == "inside"){
         //We need to reach both object and subject to be on top of stack.
         return Math.abs(distance) +
           findStackHeuristic(currentState, object) +
           findStackHeuristic(currentState, subject);
       } else if(r == "above"){
+          if(subject == "floor"){
+              return 0;
+          }
           return Math.abs(distance) +
             findStackHeuristic(currentState, object);
       } else if (r == "below"){
@@ -183,6 +187,18 @@ class StateGraph implements Graph<StateNode> {
     }
 
 }
+
+function findFloorHeuristic(state : WorldState) : number{
+    var stacks = state.stacks;
+    var heuristic : number = Infinity;
+    for(var i = 0; i < stacks.length; i++){
+        var score : number = stacks[i].length + Math.abs(state.arm-i);
+        if(score < heuristic){
+            heuristic = score;
+        }
+    }
+    return heuristic;
+}
 //Returns which position the object has in its stack,
 //starting from the top with index 0
 //This is not as usual, but used for heuristics
@@ -190,10 +206,15 @@ function findStackHeuristic(state : WorldState, obj : string) : number{
   if(state.holding == obj){
     return 0; //Is 0 if we hold that shit already
   }
+  if(obj = "floor"){
+      return findFloorHeuristic(state);
+  }
+
 
   var stack = state.stacks[this.findStackNbr(state, obj)];
   //längst ner = först
   for(var i = 0; i < stack.length; i ++){
+
     if(stack[i] == obj){
       return stack.length - 1 - i;
     }
@@ -218,10 +239,13 @@ function findStackNbr(state : WorldState, obj : string) : number {
   return -1;
 }
 
-//Returns distance between object and subject. Positive if
+//Returns sideways distance between object and subject. Positive if
 //object is to the right of subjects.
 function findDistance(state : WorldState, obj : string, subj : string) : number {
   //Check if we holding dbject or subject
+  if(subj == "floor"){
+      return 0;
+  }
   if(state.holding == obj){
     return state.arm - this.findStackNbr(state, subj);
   } else if (state.holding == subj){
