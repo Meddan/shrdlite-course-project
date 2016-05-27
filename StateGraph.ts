@@ -22,7 +22,11 @@ class StateNode {
 
     compareTo(other : StateNode) : number {
         //return (this.pos.x - other.pos.x) || (this.pos.y - other.pos.y);
-        return 0;
+        if(this.state.currentState == other.state.currentState) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 
     toString() : string {
@@ -42,7 +46,7 @@ class StateGraph implements Graph<StateNode> {
      isGoalNode(n : StateNode) : boolean {
        return n.state.isGoal()
      }
-    outgoingEdges(node : StateNode) : Edge<StateNode>[] {
+    outgoingEdges(node : StateNode) : PlannerEdge<StateNode>[] {
         var outgoing : PlannerEdge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
         //Left
@@ -109,7 +113,7 @@ class StateGraph implements Graph<StateNode> {
 
       if(r == "holding"){
         var toHold = literal.args[0];
-        return Math.abs (this.findStackNbr(currentState, toHold) 
+        return Math.abs (this.findStackNbr(currentState, toHold)
          - currentState.arm) + this.findStackHeuristic(currentState, toHold);
       }
 
