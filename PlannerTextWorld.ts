@@ -24,6 +24,12 @@ class PlannerTextWorld extends TextWorld {
             var args : string[] = currentLiteral.args;
             var wStacks = this.currentState.stacks;
 
+            if(rel != "holding" &&
+                (args[1] == this.currentState.holding
+                || args[0] == this.currentState.holding)){
+                break;
+            }
+
             if(rel == "inside"){
                 var stack = this.findStacks(args[1], wStacks);
                 // If the object above in the stack matches the object that
