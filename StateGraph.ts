@@ -5,6 +5,13 @@
 // where neighbors are vertical and horisontal
 class PlannerEdge<Node> extends Edge<Node>{
   action : string
+  constructor(f : Node, t : Node, c : number, a : string){
+    super();
+    this.from = f;
+    this.to = t;
+    this.cost = c;
+    this.action = a;
+  }
 }
 class StateNode {
     constructor(
