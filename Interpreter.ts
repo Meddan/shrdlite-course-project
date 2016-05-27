@@ -114,10 +114,22 @@ module Interpreter {
 
         var possibleObj : string[];
         var relationObj : string[];
+        var interpretation : DNFFormula = [];
 
         possibleObj = interpretEntity(cmdent, state);
 
-        if(cmdverb != "take"){ // If the command isn't take, we have a relation between two objects
+        if(cmdverb == "put"){
+          relationObj = interpretEntity(cmdloc.entity, state);
+          var heldObj = state.holding;
+          for(var l of relationObj){
+            if(allowedPhysics(state.holding, l, cmdloc.relation, state)){
+              interpretation.push([{polarity: true, relation: objRel, args: [heldObj,l]}]);
+            }
+          }
+          return interpretation;
+        }
+
+        if(cmdverb == "move"){ // If the command isn't take, we have a relation between two objects
           //Gets all the objects we want to have a relation to
           if(cmdloc.entity.object.form != "floor"){
             relationObj = interpretEntity(cmdloc.entity, state);
@@ -130,8 +142,6 @@ module Interpreter {
           } else if(relationObj.length < 1) {
             throw new Error("No possible location!")
           }
-
-          var interpretation : DNFFormula = [];
 
           // Create commands for all possible relations between the different objects
           for (var s of possibleObj){
