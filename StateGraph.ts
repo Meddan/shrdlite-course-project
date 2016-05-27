@@ -25,10 +25,14 @@ class StateNode {
         var otherState = other.state.currentState;
         if(thisState.holding == otherState.holding) {
             if(thisState.arm == otherState.arm) {
-                for(var i = 0; i < thisState.stacks.length; i++) {
-                    for(var j = 0; j < thisState.stacks[i].length; j++) {
-                        if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
-                            return 0;
+                if(thisState.stacks.length == otherState.stacks.length) {
+                    for(var i = 0; i < thisState.stacks.length; i++) {
+                        if(thisState.stacks[i].length == otherState.stacks.length) {
+                            for(var j = 0; j < thisState.stacks[i].length; j++) {
+                                if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
+                                    return 0;
+                                }
+                            }
                         }
                     }
                 }
