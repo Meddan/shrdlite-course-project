@@ -118,16 +118,7 @@ module Interpreter {
 
         possibleObj = interpretEntity(cmdent, state);
 
-        if(cmdverb == "put"){
-          relationObj = interpretEntity(cmdloc.entity, state);
-          var heldObj = state.holding;
-          for(var l of relationObj){
-            if(allowedPhysics(state.holding, l, cmdloc.relation, state)){
-              interpretation.push([{polarity: true, relation: objRel, args: [heldObj,l]}]);
-            }
-          }
-          return interpretation;
-        }
+
 
         if(cmdverb == "move"){ // If the command isn't take, we have a relation between two objects
           //Gets all the objects we want to have a relation to
@@ -138,7 +129,11 @@ module Interpreter {
           }
           //Sanity checks
           if(possibleObj.length < 1){
-            throw new Error("No possible object!")
+            if(state.holding != null){
+              possibleObj.push(state.holding);
+            } else {
+              throw new Error("No possible object!");
+            }
           } else if(relationObj.length < 1) {
             throw new Error("No possible location!")
           }
