@@ -39,7 +39,7 @@ class StateNode {
                     }
                 }
             }
-        }               
+        }
         return 1;
     }
     // Create string of all stacks, concat holding and arm position
@@ -211,7 +211,7 @@ function findStackNbr(state : WorldState, obj : string) : number {
       return i;
     }
   }
-  return -1; //Element not found
+  throw new Error("Element not found in world");
 }
 
 //Returns distance between object and subject. Positive if
