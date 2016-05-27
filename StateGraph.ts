@@ -36,9 +36,22 @@ class StateNode {
         }
         return 1;
     }
-
+    // Create string of all stacks, concat holding and arm position
     toString() : string {
-        return this.state.currentState.toString();
+        var toReturn : string = "";
+
+        for(var i = 0; i < this.state.currentState.stacks.length; i++){
+            var curStack = this.state.currentState.stacks[i];
+            if(curStack == []){
+                toReturn = toReturn.concat("");
+            } else {
+                toReturn = toReturn.concat(curStack.join());
+            }
+        }
+
+        toReturn = toReturn.concat(this.state.currentState.holding + this.state.currentState.arm);
+
+        return toReturn;
     }
 }
 
@@ -121,25 +134,25 @@ class StateGraph implements Graph<StateNode> {
 
       if(r == "holding"){
         var toHold = literal.args[0];
-        return Math.abs (this.findStackNbr(currentState, toHold)
-         - currentState.arm) + this.findStackHeuristic(currentState, toHold);
+        return Math.abs (findStackNbr(currentState, toHold)
+         - currentState.arm) + findStackHeuristic(currentState, toHold);
       }
 
       var object = literal.args[0];
       var subject = literal.args[1]; //For
 
-      var distance : number = this.findDistance(currentState, object, subject);
+      var distance : number = findDistance(currentState, object, subject);
       if(r == "ontop" || r == "inside"){
         //We need to reach both object and subject to be on top of stack.
         return Math.abs(distance) +
-          this.findStackHeuristic(currentState, object) +
-          this.findStackHeuristic(currentState, subject);
+          findStackHeuristic(currentState, object) +
+          findStackHeuristic(currentState, subject);
       } else if(r == "above"){
           return Math.abs(distance) +
-            this.findStackHeuristic(currentState, object);
+            findStackHeuristic(currentState, object);
       } else if (r == "below"){
         return Math.abs(distance) +
-          this.findStackHeuristic(currentState, subject);
+          findStackHeuristic(currentState, subject);
       } else if(r == "beside"){
           return Math.abs(distance) - 1;
       } else if (r == "rightof"){
@@ -163,46 +176,46 @@ class StateGraph implements Graph<StateNode> {
       return 0;
     }
 
-    //Returns which position the object has in its stack,
-    //starting from the top with index 0
-    //This is not as usual, but used for heuristics
-    findStackHeuristic(state : WorldState, obj : string) : number{
-      if(state.holding == "obj"){
-        return 0; //Is 0 if we hold that shit already
-      }
-      var stack = state.stacks[this.findStackNbr(state, obj)];
-      //längst ner = först
-      for(var i = 0; i < stack.length; i ++){
-        if(stack[i] == obj){
-          return stack.length - 1 - i;
-        }
-      }
-      return 0;
+}
+//Returns which position the object has in its stack,
+//starting from the top with index 0
+//This is not as usual, but used for heuristics
+function findStackHeuristic(state : WorldState, obj : string) : number{
+  if(state.holding == obj){
+    return 0; //Is 0 if we hold that shit already
+  }
 
+  var stack = state.stacks[this.findStackNbr(state, obj)];
+  //längst ner = först
+  for(var i = 0; i < stack.length; i ++){
+    if(stack[i] == obj){
+      return stack.length - 1 - i;
     }
+  }
+  return 0;
 
-    //returns the number of the stack containing the given object.
-    findStackNbr(state : WorldState, obj : string) : number {
-      var stacks = state.stacks;
-      for(var i = 0; i < stacks.length; i++){
-        // If a stack contains the provided entity
-        if(stacks[i].indexOf(obj) != -1) {
-          return i;
-        }
-      }
-      return -1; //Element not found
+}
+
+//returns the number of the stack containing the given object.
+function findStackNbr(state : WorldState, obj : string) : number {
+  var stacks = state.stacks;
+  for(var i = 0; i < stacks.length; i++){
+    // If a stack contains the provided entity
+    if(stacks[i].indexOf(obj) != -1) {
+      return i;
     }
+  }
+  return -1; //Element not found
+}
 
-    //Returns distance between object and subject. Positive if
-    //object is to the right of subjects.
-    findDistance(state : WorldState, obj : string, subj : string) : number {
-      //Check if we holding dbject or subject
-      if(state.holding == obj){
-        return state.arm - this.findStackNbr(state, subj);
-      } else if (state.holding == subj){
-        return this.findStackNbr(state, obj) - state.arm;
-      }
-      return this.findStackNbr(state, obj) - this.findStackNbr(state, subj);
-    }
-
+//Returns distance between object and subject. Positive if
+//object is to the right of subjects.
+function findDistance(state : WorldState, obj : string, subj : string) : number {
+  //Check if we holding dbject or subject
+  if(state.holding == obj){
+    return state.arm - this.findStackNbr(state, subj);
+  } else if (state.holding == subj){
+    return this.findStackNbr(state, obj) - state.arm;
+  }
+  return this.findStackNbr(state, obj) - this.findStackNbr(state, subj);
 }

@@ -135,7 +135,7 @@ class PlannerTextWorld extends TextWorld {
         if (this.currentState.arm <= 0) {
             throw "already at edge!";
         }
-        var newWorld : WorldState = this.currentState;
+        var newWorld : WorldState = cloneWorldState(this.currentState);
         newWorld.arm--;
         return new PlannerTextWorld(newWorld, this.formula);
     }
@@ -144,7 +144,7 @@ class PlannerTextWorld extends TextWorld {
         if (this.currentState.arm >= this.currentState.stacks.length - 1) {
             throw "already at edge!";
         }
-        var newWorld : WorldState = this.currentState;
+        var newWorld : WorldState = cloneWorldState(this.currentState);
         newWorld.arm++;
         return new PlannerTextWorld(newWorld, this.formula);
     }
@@ -153,7 +153,7 @@ class PlannerTextWorld extends TextWorld {
         if (this.currentState.holding) {
             throw "already holding something"
         }
-        var newWorld : WorldState = this.currentState;
+        var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
         var pos = newWorld.stacks[stack].length - 1;
         if (pos < 0) {
@@ -167,7 +167,7 @@ class PlannerTextWorld extends TextWorld {
         if (!this.currentState.holding) {
             throw "Not holding anything!";
         }
-        var newWorld : WorldState = this.currentState;
+        var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
         var holding = newWorld.holding;
         if(newWorld.stacks[stack] == []){
@@ -277,4 +277,22 @@ class PlannerTextWorld extends TextWorld {
 
       return true;
     }
+  }
+
+  function cloneWorldState(state : WorldState) : WorldState {
+      var newStacks : Stack[] = [];
+
+      // clone stacks
+      for(var i = 0; i < state.stacks.length; i++){
+          // For each stack, slice out and add to new list of stacks
+          newStacks.push(state.stacks[i].slice(0));
+      }
+
+      return {
+          stacks: newStacks,
+          holding: state.holding,
+          arm: state.arm,
+          objects: state.objects,
+          examples: state.examples
+      };
   }

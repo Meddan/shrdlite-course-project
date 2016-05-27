@@ -64,9 +64,9 @@ function aStarSearch<Node>
     };
     let startTime = new Date().getTime();
     let openSet : collections.Set<Node> = new collections.Set<Node>();
-    let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>();
-    let gScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
-    let fScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>();
+    let cameFrom : collections.Dictionary<Node,Node> = new collections.Dictionary<Node,Node>(nodeToString);
+    let gScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>(nodeToString);
+    let fScore : collections.Dictionary<Node,number> = new collections.Dictionary<Node,number>(nodeToString);
     openSet.add(start);
     fScore.setValue(start,heuristics(start));
     gScore.setValue(start,0);
@@ -85,6 +85,7 @@ function aStarSearch<Node>
             }
         }
         if (goal(current)){
+            console.log("GAOL");
           let result = new SearchResult<Node>();
           result.path = reconstruct_path(cameFrom, current).reverse();
           result.cost = gScore.getValue(current);
@@ -111,6 +112,7 @@ function aStarSearch<Node>
           break;
         }
     }
+    console.log("NULLING");
     return null;
 
 }
@@ -138,4 +140,8 @@ function reconstruct_path<Node>
     total_path.push(current);
   }
   return total_path;
+}
+
+function nodeToString<Node> (key : Node) : string{
+    return key.toString();
 }
