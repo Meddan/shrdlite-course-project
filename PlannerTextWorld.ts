@@ -1,8 +1,6 @@
 /// <reference path="./TextWorld.ts"/>
 ///<reference path="Interpreter.ts"/>
-
 class PlannerTextWorld extends TextWorld {
-
     constructor(public currentState : WorldState, public formula : Interpreter.DNFFormula) {
         super(currentState);
         // Text world deletes holding in constructor
