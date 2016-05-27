@@ -29,13 +29,17 @@ class StateNode {
         if(thisState.arm != otherState.arm){
           return 0;
         }
-        for(var i = 0; i < thisState.stacks.length; i++) {
-          for(var j = 0; j < thisState.stacks[i].length; j++) {
-              if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
+        if(thisState.stacks.length == otherState.stacks.length) {
+            for(var i = 0; i < thisState.stacks.length; i++) {
+                if(thisState.stacks[i].length == otherState.stacks.length) {
+                    for(var j = 0; j < thisState.stacks[i].length; j++) {
+                        if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
                             return 0;
-              }
-          }
-        }
+                        }
+                    }
+                }
+            }
+        }               
         return 1;
     }
     // Create string of all stacks, concat holding and arm position
