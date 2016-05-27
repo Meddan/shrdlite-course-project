@@ -87,6 +87,7 @@ module Planner {
         var sg : StateGraph = new StateGraph(ptw);
         var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode,sg.heuristic, 10000000000 );
 
+        for (var j = 0; j < result.path.length-1; j++) {
             var outedges : PlannerEdge<StateNode>[] = sg.outgoingEdges(result.path[j]);
             for (var k = 0; k < outedges.length-1; k++) {
                 var nextNode = outedges[k].to;
