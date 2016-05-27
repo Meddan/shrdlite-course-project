@@ -3,8 +3,9 @@
 // This is an example graph
 // consisting of a 2-dimensional grid
 // where neighbors are vertical and horisontal
-
-
+class PlannerEdge<Node> extends Edge<Node>{
+  action : string
+}
 class StateNode {
     constructor(
         public state : PlannerTextWorld
