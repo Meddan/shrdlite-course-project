@@ -180,7 +180,7 @@ class PlannerTextWorld extends TextWorld {
             throw new Error("what is going on, can't place on floor")
           }
         } else {
-          var topOfStack = newWorld.stacks[stack][-1];
+          var topOfStack = newWorld.stacks[stack][newWorld.stacks[stack].length-1];
           if(this.allowedPhysics( holding,topOfStack, "ontop", newWorld)){
             newWorld.stacks[stack].push(newWorld.holding);
             newWorld.holding = null;
