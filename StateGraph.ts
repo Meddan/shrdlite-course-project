@@ -21,12 +21,20 @@ class StateNode {
     }
 
     compareTo(other : StateNode) : number {
-        //return (this.pos.x - other.pos.x) || (this.pos.y - other.pos.y);
-        if(this.state.currentState == other.state.currentState) {
-            return 1;
-        } else {
-            return 0;
+        var thisState = this.state.currentState;
+        var otherState = other.state.currentState;
+        if(thisState.holding == otherState.holding) {
+            if(thisState.arm == otherState.arm) {
+                for(var i = 0; i < thisState.stacks.length; i++) {
+                    for(var j = 0; j < thisState.stacks[i].length; j++) {
+                        if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
+                            return 0;
+                        }
+                    }
+                }
+            }
         }
+        return 1;
     }
 
     toString() : string {
