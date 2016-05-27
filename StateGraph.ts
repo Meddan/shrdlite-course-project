@@ -41,7 +41,7 @@ class StateGraph implements Graph<StateNode> {
      }
 
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
-        var outgoing : Edge<StateNode>[] = [];
+        var outgoing : PlannerEdge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
         //Left
         var newNode : StateNode;
@@ -50,7 +50,8 @@ class StateGraph implements Graph<StateNode> {
           outgoing.push({
               from: node,
               to: newNode,
-              cost: 1
+              cost: 1,
+              action: "l"
           });
         } catch(Error){}
         //Right
@@ -59,7 +60,8 @@ class StateGraph implements Graph<StateNode> {
           outgoing.push({
               from: node,
               to: newNode,
-              cost: 1
+              cost: 1,
+              action: "r"
           });
         } catch(Error){}
         //Pick
@@ -68,7 +70,8 @@ class StateGraph implements Graph<StateNode> {
           outgoing.push({
               from: node,
               to: newNode,
-              cost: 1
+              cost: 1,
+              action: "p"
           });
         } catch(Error){}
         //Drop
@@ -77,7 +80,8 @@ class StateGraph implements Graph<StateNode> {
           outgoing.push({
               from: node,
               to: newNode,
-              cost: 1
+              cost: 1,
+              action: "d"
           });
         } catch(Error){}
         return outgoing;
