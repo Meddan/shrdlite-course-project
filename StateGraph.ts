@@ -205,13 +205,17 @@ function findStackHeuristic(state : WorldState, obj : string) : number{
 //returns the number of the stack containing the given object.
 function findStackNbr(state : WorldState, obj : string) : number {
   var stacks = state.stacks;
+  if (state.holding == obj){
+    return state.arm;
+  }
   for(var i = 0; i < stacks.length; i++){
     // If a stack contains the provided entity
     if(stacks[i].indexOf(obj) != -1) {
       return i;
     }
   }
-  throw new Error("Element not found in world");
+  console.log("Error in findStackNbr, it doesn't find element.")
+  return -1;
 }
 
 //Returns distance between object and subject. Positive if
