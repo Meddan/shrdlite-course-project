@@ -100,17 +100,23 @@ class StateGraph implements Graph<StateNode> {
       //Return distance -1 if beside
       var plannerState : PlannerTextWorld = node.state;
       var currentState : WorldState = plannerState.currentState;
-      //This only takes one single disjunction right now
+
+      //This only takes one single disjunction right now, maybe not right...
       var literal : Interpreter.Literal = plannerState.formula[0][0];
       var r = literal.relation;
+
       if(r == "holding"){
-        return 0 //TODO: Some holding heuristic for holding some shit
+        var toHold = literal.args[0];
+        return Math.abs (this.findStackNbr(currentState, toHold) 
+         - currentState.arm) + this.findStackHeuristic(currentState, toHold);
       }
+
       var object = literal.args[0];
-      var subject = literal.args[1]; //For "drop" this might not exist
+      var subject = literal.args[1]; //For
 
       var distance : number = this.findDistance(currentState, object, subject);
       if(r == "ontop" || r == "inside"){
+        //We need to reach both object and subject to be on top of stack.
         return Math.abs(distance) +
           this.findStackHeuristic(currentState, object) +
           this.findStackHeuristic(currentState, subject);
