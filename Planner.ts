@@ -1,6 +1,6 @@
 ///<reference path="World.ts"/>
 ///<reference path="Interpreter.ts"/>
-
+///<reference path="PlannerTextWorld.ts"/>
 /**
 * Planner module
 *
@@ -81,47 +81,11 @@ module Planner {
           //Handle ambiguity.
           throw new Error("ambiguous interpretation")
         }
-        do {
-            var pickstack = Math.floor(Math.random() * state.stacks.length);
-        } while (state.stacks[pickstack].length == 0);
+
         var plan : string[] = [];
-
-        // First move the arm to the leftmost nonempty stack
-        if (pickstack < state.arm) {
-            plan.push("Moving left");
-            for (var i = state.arm; i > pickstack; i--) {
-                plan.push("l");
-            }
-        } else if (pickstack > state.arm) {
-            plan.push("Moving right");
-            for (var i = state.arm; i < pickstack; i++) {
-                plan.push("r");
-            }
-        }
-
-        // Then pick up the object
-        var obj = state.stacks[pickstack][state.stacks[pickstack].length-1];
-        plan.push("Picking up the " + state.objects[obj].form,
-                  "p");
-
-        if (pickstack < state.stacks.length-1) {
-            // Then move to the rightmost stack
-            plan.push("Moving as far right as possible");
-            for (var i = pickstack; i < state.stacks.length-1; i++) {
-                plan.push("r");
-            }
-
-            // Then move back
-            plan.push("Moving back");
-            for (var i = state.stacks.length-1; i > pickstack; i--) {
-                plan.push("l");
-            }
-        }
-
-        // Finally put it down again
-        plan.push("Dropping the " + state.objects[obj].form,
-                  "d");
-
+        var ptw : PlannerTextWorld = new PlannerTextWorld(state, interpretation);
+        var sg : StateGraph = new StateGraph(ptw);
+        var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode,sg.heuristic, 10000000000 )
         return plan;
     }
 

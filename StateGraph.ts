@@ -39,7 +39,9 @@ class StateGraph implements Graph<StateNode> {
     ) {
       //shit to do in constructor goes here
      }
-
+     isGoalNode(n : StateNode) : boolean {
+       return n.state.isGoal()
+     }
     outgoingEdges(node : StateNode) : Edge<StateNode>[] {
         var outgoing : PlannerEdge<StateNode>[] = [];
         //Add all reachable states (with one action) to outgoing
