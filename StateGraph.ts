@@ -23,16 +23,18 @@ class StateNode {
     compareTo(other : StateNode) : number {
         var thisState = this.state.currentState;
         var otherState = other.state.currentState;
-        if(thisState.holding == otherState.holding) {
-            if(thisState.arm == otherState.arm) {
-                for(var i = 0; i < thisState.stacks.length; i++) {
-                    for(var j = 0; j < thisState.stacks[i].length; j++) {
-                        if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
+        if(thisState.holding != otherState.holding){
+          return 0;
+        }
+        if(thisState.arm != otherState.arm){
+          return 0;
+        }
+        for(var i = 0; i < thisState.stacks.length; i++) {
+          for(var j = 0; j < thisState.stacks[i].length; j++) {
+              if(thisState.stacks[i][j] != otherState.stacks[i][j]) {
                             return 0;
-                        }
-                    }
-                }
-            }
+              }
+          }
         }
         return 1;
     }
