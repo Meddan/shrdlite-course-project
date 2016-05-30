@@ -120,7 +120,7 @@ module Interpreter {
 
 
 
-        if(cmdverb == "move"){ // If the command isn't take, we have a relation between two objects
+        if(cmdverb != "take"){ // If the command isn't take, we have a relation between two objects
           //Gets all the objects we want to have a relation to
           if(cmdloc.entity.object.form != "floor"){
             relationObj = interpretEntity(cmdloc.entity, state);
@@ -129,9 +129,11 @@ module Interpreter {
           }
           //Sanity checks
           if(possibleObj.length < 1){
-            if(state.holding != null){
-              throw new Error("No possible object!");
-            }
+              if(state.holding != null){
+                  possibleObj.push(state.holding); //This is not always right...
+              } else {
+                  throw new Error("No possible object!");
+              }
           } else if(relationObj.length < 1) {
             throw new Error("No possible location!")
           }
@@ -153,7 +155,7 @@ module Interpreter {
 
           return interpretation;
 
-        } else if(cmdverb == "take"){ // If the command is take, the goal is to hold an object
+        } else { // If the command is take, the goal is to hold an object
 
           // If there are no matches for the requested object, throw an error
           if(possibleObj.length < 1){
@@ -167,28 +169,6 @@ module Interpreter {
             }
           }
           return interpretation;
-        } else { //Command is "put"
-        if(!state.holding){
-          throw new Error("I have nothing to put down!")
-        }
-        if(cmdloc.entity.object.form != "floor"){
-          relationObj = interpretEntity(cmdloc.entity, state);
-        } else {
-          relationObj = ["floor"]
-        }
-        if(relationObj.length < 1){
-          throw new Error("No possible location!");
-        }
-        for (var l of relationObj){
-          if(allowedPhysics(state.holding, l, objRel, state)){
-            interpretation.push([{polarity: true, relation: objRel, args: [state.holding, l]}]);
-          }
-        }
-        if(interpretation.length == 0){
-          throw new Error("No interpretation!");
-        }
-        return interpretation;
-
         }
     }
 
@@ -504,6 +484,14 @@ module Interpreter {
         objdefs.push(state.objects[s]);
       }
 
+      if(state.holding){
+          console.log(state.objects[state.holding].form);
+          console.log(state.objects[state.holding].color);
+          console.log(state.objects[state.holding].size);
+          objdefs.push(state.objects[state.holding]);
+          keys.push(state.holding);
+      }
+
       if (objobj == null){
         if(objform == "floor"){
           return ["floor"];
@@ -517,8 +505,10 @@ module Interpreter {
           }
         }
 
+        console.log("found tempdefs " + tempdefs);
         //remove all objects that do not have the correct color
         if(objcolor != null){
+            console.log("checking color, is " + objcolor)
           for (var x = 0; x < tempdefs.length; x++){
             var xObj = tempdefs[x];
             if(xObj.color != objcolor){
@@ -527,8 +517,10 @@ module Interpreter {
             }
           }
         }
+        console.log("found tempdefs " + tempdefs);
         //remove all objects of the wrong size
         if(objsize != null){
+            console.log("checking size, is " + objsize);
           for (var u = 0; u < tempdefs.length; u++){
             var uObj = tempdefs[u];
             if(uObj.size != objsize){
@@ -537,11 +529,14 @@ module Interpreter {
             }
           }
         }
+        console.log("found tempdefs " + tempdefs);
         //return list of all matching objects.
         var ans : string[] = new Array<string>();
+        console.log("keys are "+ keys);
         for(var d of tempdefs){
           ans.push(keys[objdefs.indexOf(d)])
         }
+        console.log("found all matching objects, they are " + ans)
         return ans;
       } else {
         //obj = {Object Location}
