@@ -82,7 +82,6 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "l"
           });
-          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Right
         try {
@@ -93,7 +92,6 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "r"
           });
-          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Pick
         try {
@@ -104,7 +102,6 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "p"
           });
-          console.log("String of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Drop
         try {
@@ -115,7 +112,6 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "d"
           });
-          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         return outgoing;
     }
@@ -140,7 +136,6 @@ class StateGraph implements Graph<StateNode> {
       if(r == "holding"){
         var toHold = literal.args[0];
         if(toHold == currentState.holding){
-          console.log("Holding correct object!")
           return 0;
         }
         return Math.abs (findStackNbr(currentState, toHold)
@@ -239,7 +234,6 @@ function findStackNbr(state : WorldState, obj : string) : number {
       return i;
     }
   }
-  console.log("Error in findStackNbr, it doesn't find element.")
   return -1;
 }
 

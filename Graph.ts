@@ -85,7 +85,6 @@ function aStarSearch<Node>
             }
         }
         if (goal(current)){
-            console.log("GAOL");
           let result = new SearchResult<Node>();
           result.path = reconstruct_path(cameFrom, current).reverse();
           result.cost = gScore.getValue(current);
@@ -109,11 +108,9 @@ function aStarSearch<Node>
         }
         let endTime = new Date().getTime();
         if(endTime - startTime >= 1000*timeout){
-            console.log("TIMEOUT");
           break;
         }
     }
-    console.log("NULLING");
     return null;
 
 }

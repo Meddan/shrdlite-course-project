@@ -485,9 +485,6 @@ module Interpreter {
       }
 
       if(state.holding){
-          console.log(state.objects[state.holding].form);
-          console.log(state.objects[state.holding].color);
-          console.log(state.objects[state.holding].size);
           objdefs.push(state.objects[state.holding]);
           keys.push(state.holding);
       }
@@ -505,10 +502,8 @@ module Interpreter {
           }
         }
 
-        console.log("found tempdefs " + tempdefs);
         //remove all objects that do not have the correct color
         if(objcolor != null){
-            console.log("checking color, is " + objcolor)
           for (var x = 0; x < tempdefs.length; x++){
             var xObj = tempdefs[x];
             if(xObj.color != objcolor){
@@ -517,10 +512,8 @@ module Interpreter {
             }
           }
         }
-        console.log("found tempdefs " + tempdefs);
         //remove all objects of the wrong size
         if(objsize != null){
-            console.log("checking size, is " + objsize);
           for (var u = 0; u < tempdefs.length; u++){
             var uObj = tempdefs[u];
             if(uObj.size != objsize){
@@ -529,14 +522,11 @@ module Interpreter {
             }
           }
         }
-        console.log("found tempdefs " + tempdefs);
         //return list of all matching objects.
         var ans : string[] = new Array<string>();
-        console.log("keys are "+ keys);
         for(var d of tempdefs){
           ans.push(keys[objdefs.indexOf(d)])
         }
-        console.log("found all matching objects, they are " + ans)
         return ans;
       } else {
         //obj = {Object Location}
