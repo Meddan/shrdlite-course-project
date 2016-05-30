@@ -50,7 +50,7 @@ class StateNode {
             }
             toReturn = toReturn.concat(",")
         }
-        toReturn = toReturn.concat + "holding "
+        toReturn = toReturn.concat( "holding ")
         toReturn = toReturn.concat(this.state.currentState.holding + this.state.currentState.arm);
 
         return toReturn;
@@ -82,6 +82,7 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "l"
           });
+          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Right
         try {
@@ -92,6 +93,7 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "r"
           });
+          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Pick
         try {
@@ -102,6 +104,7 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "p"
           });
+          console.log("String of node: "+ this.heuristic(newNode))
         } catch(Error){}
         //Drop
         try {
@@ -112,6 +115,7 @@ class StateGraph implements Graph<StateNode> {
               cost: 1,
               action: "d"
           });
+          console.log("H of node: "+ this.heuristic(newNode))
         } catch(Error){}
         return outgoing;
     }
@@ -127,7 +131,7 @@ class StateGraph implements Graph<StateNode> {
       //Difference from object to subject
       //Return same if ontop, inside, above, below
       //Return distance -1 if beside
-      var plannerState : PlannerTextWorld = node.state;
+      /*var plannerState : PlannerTextWorld = node.state;
       var currentState : WorldState = plannerState.currentState;
       //This only takes one single disjunction right now, maybe not right...
       var literal : Interpreter.Literal = plannerState.formula[0][0];
@@ -135,8 +139,12 @@ class StateGraph implements Graph<StateNode> {
 
       if(r == "holding"){
         var toHold = literal.args[0];
+        if(toHold == currentState.holding){
+          console.log("Holding correct object!")
+          return 0;
+        }
         return Math.abs (findStackNbr(currentState, toHold)
-         - currentState.arm) + findStackHeuristic(currentState, toHold)+1;
+         - currentState.arm) + findStackHeuristic(currentState, toHold);
       }
 
       var object = literal.args[0];
@@ -178,8 +186,10 @@ class StateGraph implements Graph<StateNode> {
         }
       }
       //This should not happen, but if it does...
+      */
       return 0;
     }
+
 
 }
 
