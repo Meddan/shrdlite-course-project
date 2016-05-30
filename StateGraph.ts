@@ -240,12 +240,12 @@ function findStackNbr(state : WorldState, obj : string) : number {
 }
 
 //Returns sideways distance between object and subject. Positive if
-//object is to the right of subjects.
+//object is to the right of subject.
 function findDistance(state : WorldState, obj : string, subj : string) : number {
-  //Check if we holding dbject or subject
   if(subj == "floor"){
       return 0;
   }
+    //Check if we holding dbject or subject
   if(state.holding == obj){
     return state.arm - this.findStackNbr(state, subj);
   } else if (state.holding == subj){
