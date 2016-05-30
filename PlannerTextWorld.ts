@@ -181,7 +181,7 @@ class PlannerTextWorld extends TextWorld {
         var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
         var holding = newWorld.holding;
-        if(newWorld.stacks[stack] == []){
+        if(newWorld.stacks[stack].length == 0){
           console.log("Cleared 'newWorld.stacks[stack] == []'");
           //EMPTY STACK, WE ABOVE THE FLOOR: DO WE FIND IT?
           if(this.allowedPhysics( holding,"floor", "ontop", newWorld)){
