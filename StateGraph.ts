@@ -185,7 +185,7 @@ class StateGraph implements Graph<StateNode> {
 
 function findFloorHeuristic(state : WorldState) : number{
     var stacks = state.stacks;
-    var heuristic : number = Infinity;
+    var heuristic : number = 10;
     for(var i = 0; i < stacks.length; i++){
         var score : number = stacks[i].length + Math.abs(state.arm-i);
         if(score < heuristic){
@@ -206,12 +206,12 @@ function findStackHeuristic(state : WorldState, obj : string) : number{
   }
 
 
-  var stack = state.stacks[this.findStackNbr(state, obj)];
+  var objstack = state.stacks[this.findStackNbr(state, obj)];
   //längst ner = först
-  for(var i = 0; i < stack.length; i ++){
+  for(var i = 0; i < objstack.length; i++){
 
-    if(stack[i] == obj){
-      return stack.length - 1 - i;
+    if(objstack[i] == obj){
+      return objstack.length - 1 - i;
     }
   }
   return 0;
