@@ -166,8 +166,7 @@ class PlannerTextWorld extends TextWorld {
         }
         var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
-        var pos = newWorld.stacks[stack].length - 1;
-        if (pos < 0) {
+        if (newWorld.stacks[stack].length == 0) {
             throw "Stack is empty!";
         }
         newWorld.holding = newWorld.stacks[stack].pop();
