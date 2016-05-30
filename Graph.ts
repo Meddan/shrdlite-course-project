@@ -109,6 +109,7 @@ function aStarSearch<Node>
         }
         let endTime = new Date().getTime();
         if(endTime - startTime >= 1000*timeout){
+            console.log("TIMEOUT");
           break;
         }
     }
