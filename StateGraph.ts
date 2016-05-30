@@ -131,7 +131,7 @@ class StateGraph implements Graph<StateNode> {
       //Difference from object to subject
       //Return same if ontop, inside, above, below
       //Return distance -1 if beside
-      /*var plannerState : PlannerTextWorld = node.state;
+      var plannerState : PlannerTextWorld = node.state;
       var currentState : WorldState = plannerState.currentState;
       //This only takes one single disjunction right now, maybe not right...
       var literal : Interpreter.Literal = plannerState.formula[0][0];
@@ -186,7 +186,6 @@ class StateGraph implements Graph<StateNode> {
         }
       }
       //This should not happen, but if it does...
-      */
       return 0;
     }
 
