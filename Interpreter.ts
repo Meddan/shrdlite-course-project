@@ -130,8 +130,6 @@ module Interpreter {
           //Sanity checks
           if(possibleObj.length < 1){
             if(state.holding != null){
-              possibleObj.push(state.holding);
-            } else {
               throw new Error("No possible object!");
             }
           } else if(relationObj.length < 1) {
@@ -155,7 +153,7 @@ module Interpreter {
 
           return interpretation;
 
-        } else { // If the command is take, the goal is to hold an object
+        } else if(cmdverb == "take"){ // If the command is take, the goal is to hold an object
 
           // If there are no matches for the requested object, throw an error
           if(possibleObj.length < 1){
@@ -169,6 +167,28 @@ module Interpreter {
             }
           }
           return interpretation;
+        } else { //Command is "put"
+        if(!state.holding){
+          throw new Error("I have nothing to put down!")
+        }
+        if(cmdloc.entity.object.form != "floor"){
+          relationObj = interpretEntity(cmdloc.entity, state);
+        } else {
+          relationObj = ["floor"]
+        }
+        if(relationObj.length < 1){
+          throw new Error("No possible location!");
+        }
+        for (var l of relationObj){
+          if(allowedPhysics(state.holding, l, objRel, state)){
+            interpretation.push([{polarity: true, relation: objRel, args: [state.holding, l]}]);
+          }
+        }
+        if(interpretation.length == 0){
+          throw new Error("No interpretation!");
+        }
+        return interpretation;
+
         }
     }
 
