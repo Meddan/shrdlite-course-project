@@ -115,16 +115,16 @@ function testIsGoal () {
     var world1 : PlannerTextWorld = new PlannerTextWorld(exampleWorld1, DNFformula1);
     var world2 : PlannerTextWorld = new PlannerTextWorld(exampleWorld2, DNFformula2);
     var world3 : PlannerTextWorld = new PlannerTextWorld(exampleWorld3, DNFformula3);
-    console.log(world1.isGoal());
-    console.log(world2.isGoal());
-    console.log(world3.isGoal());
+    console.log("Should be false: " + world1.isGoal());
+    console.log("Should be true: " + world2.isGoal());
+    console.log("Should be false: " + world3.isGoal());
     console.log("more tests");
     var world4 : PlannerTextWorld = new PlannerTextWorld(exampleWorld4, DNFformula4);
     var world5 : PlannerTextWorld = new PlannerTextWorld(exampleWorld5, DNFformula5);
     var world6 : PlannerTextWorld = new PlannerTextWorld(exampleWorld6, DNFformula6);
-    console.log(world4.isGoal());
-    console.log(world5.isGoal());
-    console.log(world6.isGoal());
+    console.log("Should be false: " + world4.isGoal());
+    console.log("Should be true: " + world5.isGoal());
+    console.log("Should be false: " + world6.isGoal());
 }
 
 try{
