@@ -12,11 +12,6 @@ class StateNode {
     ) {}
 
     add(action : String) : StateNode {
-        /*return new GridNode({
-            x: this.pos.x + delta.x,
-            y: this.pos.y + delta.y
-        });*/
-        //should probably return: state.doAction(action)
         return null;
     }
 
