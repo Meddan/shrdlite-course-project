@@ -44,12 +44,13 @@ class StateNode {
         for(var i = 0; i < this.state.currentState.stacks.length; i++){
             var curStack = this.state.currentState.stacks[i];
             if(curStack == []){
-                toReturn = toReturn.concat("");
+                toReturn = toReturn.concat(".");
             } else {
                 toReturn = toReturn.concat(curStack.join());
             }
+            toReturn = toReturn.concat(",")
         }
-
+        toReturn = toReturn.concat + "holding "
         toReturn = toReturn.concat(this.state.currentState.holding + this.state.currentState.arm);
 
         return toReturn;
@@ -128,7 +129,6 @@ class StateGraph implements Graph<StateNode> {
       //Return distance -1 if beside
       var plannerState : PlannerTextWorld = node.state;
       var currentState : WorldState = plannerState.currentState;
-
       //This only takes one single disjunction right now, maybe not right...
       var literal : Interpreter.Literal = plannerState.formula[0][0];
       var r = literal.relation;
@@ -136,7 +136,7 @@ class StateGraph implements Graph<StateNode> {
       if(r == "holding"){
         var toHold = literal.args[0];
         return Math.abs (findStackNbr(currentState, toHold)
-         - currentState.arm) + findStackHeuristic(currentState, toHold);
+         - currentState.arm) + findStackHeuristic(currentState, toHold)+1;
       }
 
       var object = literal.args[0];
@@ -201,7 +201,7 @@ function findStackHeuristic(state : WorldState, obj : string) : number{
   if(state.holding == obj){
     return 0; //Is 0 if we hold that shit already
   }
-  if(obj = "floor"){
+  if(obj == "floor"){
       return findFloorHeuristic(state);
   }
 
