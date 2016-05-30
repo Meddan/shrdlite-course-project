@@ -86,7 +86,7 @@ module Planner {
         var plan : string[] = [];
         var ptw : PlannerTextWorld = new PlannerTextWorld(state, interpretation);
         var sg : StateGraph = new StateGraph(ptw);
-        var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode, sg.heuristic, 10000000000 );
+        var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode, sg.heuristic, 5 );
         console.log(result);
 
         console.log("WE GUN BULD IT ");
