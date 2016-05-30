@@ -38,12 +38,16 @@ class PlannerTextWorld extends TextWorld {
                     break;
                 }
             } else if(rel == "ontop"){
+                var stack = this.findStacks(args[0], wStacks);
                 if(args[1] == "floor"){
-                    var stack = this.findStacks(args[0], wStacks);
                     // Check if thingy is on floor
                     if(!(stack.indexOf(args[0]) == 0) == pol){
                         break;
                     }
+                } else {
+                  if((!((stack[stack.indexOf(args[1]) + 1]) == (args[0])) == (pol))){
+                    break;
+                  }
                 }
             } else if (rel == "under") {
                 var stack = this.findStacks(args[1], wStacks);
