@@ -25,8 +25,8 @@ class PlannerTextWorld extends TextWorld {
             var wStacks = this.currentState.stacks;
 
             if(rel != "holding" &&
-                (args[1] == this.currentState.holding
-                || args[0] == this.currentState.holding)){
+                (args[0] == this.currentState.holding
+                || args[1] == this.currentState.holding)){
                 break;
             }
 
@@ -132,9 +132,8 @@ class PlannerTextWorld extends TextWorld {
           return stacks[i];
         }
       }
-
       // This should never happen as we always get
-      throw new Error("No mathcing stack");
+      throw new Error("No matching stack");
 
     }
     public leftClone() : PlannerTextWorld {
@@ -168,8 +167,8 @@ class PlannerTextWorld extends TextWorld {
         newWorld.holding = newWorld.stacks[stack].pop();
         return new PlannerTextWorld(newWorld, this.formula);
     }
-
     public dropClone() : PlannerTextWorld {
+      console.log("Entering dropClone");
         if (!this.currentState.holding) {
             throw "Not holding anything!";
         }
@@ -177,19 +176,25 @@ class PlannerTextWorld extends TextWorld {
         var stack = newWorld.arm;
         var holding = newWorld.holding;
         if(newWorld.stacks[stack] == []){
-          //EMPTY STACK WE HAVE FLOOR
+          console.log("Cleared 'newWorld.stacks[stack] == []'");
+          //EMPTY STACK, WE ABOVE THE FLOOR: DO WE FIND IT?
           if(this.allowedPhysics( holding,"floor", "ontop", newWorld)){
+            console.log("Cleared 'allowedPhysics' with target floor");
             newWorld.stacks[stack].push(newWorld.holding);
             newWorld.holding = null;
+            console.log("Exiting dropClone with target floor");
             return new PlannerTextWorld(newWorld, this.formula);
           } else {
             throw new Error("what is going on, can't place on floor")
           }
         } else {
+          console.log("NOT above empty stack'");
           var topOfStack = newWorld.stacks[stack][newWorld.stacks[stack].length-1];
           if(this.allowedPhysics( holding,topOfStack, "ontop", newWorld)){
+            console.log("Allowedphysics passed with target object")
             newWorld.stacks[stack].push(newWorld.holding);
             newWorld.holding = null;
+            console.log("Exiting dropClone with target stack");
             return new PlannerTextWorld(newWorld, this.formula);
           } else {
             throw new Error("We cannot drop here")
