@@ -45,24 +45,26 @@ class PlannerTextWorld extends TextWorld {
                         break;
                     }
                 } else {
-                  if((!((stack[stack.indexOf(args[1]) + 1]) == (args[0])) == (pol))){
+                  // If args[0] is above args[1] or in stack, we all good
+                  if(!((stack[stack.indexOf(args[1]) + 1]) == (args[0])) == (pol)
+                    || stack.indexOf(args[1]) == -1){
                     break;
                   }
                 }
             } else if (rel == "under") {
                 var stack = this.findStacks(args[1], wStacks);
 
-                // If args[0] is below args[1] and actually is in stack, we all good
+                // If args[0] is below args[1] or actually is in stack, we all good
                 if(!(stack.indexOf(args[0]) < stack.indexOf(args[1])) == (pol)
-                    && (stack.indexOf(args[0]) != -1)){
+                    || (stack.indexOf(args[0]) == -1)){
                     break;
                 }
             } else if (rel == "above") {
                 var stack = this.findStacks(args[1], wStacks);
 
-                // If args[0] is above args[1] and actually is in stack, we all good
+                // If args[0] is above args[1] or actually is in stack, we all good
                 if(!(stack.indexOf(args[0]) > stack.indexOf(args[1])) == (pol)
-                    && (stack.indexOf(args[0]) != -1)){
+                    || (stack.indexOf(args[0]) == -1)){
                     break;
                 }
             } else if (rel == "beside") {
