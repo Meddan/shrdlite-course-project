@@ -86,7 +86,7 @@ module Planner {
         var plan : string[] = [];
         var ptw : PlannerTextWorld = new PlannerTextWorld(state, interpretation);
         var sg : StateGraph = new StateGraph(ptw);
-        var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode, sg.heuristic, 5 );
+        var result : SearchResult<StateNode> = aStarSearch(sg, new StateNode(ptw), sg.isGoalNode, sg.heuristic, 60 );
 
         for (var j = 0; j < result.path.length-1; j++) {
             var outedges : PlannerEdge<StateNode>[] = sg.outgoingEdges(result.path[j]);

@@ -116,12 +116,9 @@ module Interpreter {
         var relationObj : string[];
         var interpretation : DNFFormula = [];
 
-        possibleObj = interpretEntity(cmdent, state);
-
-
-
-        if(cmdverb != "take"){ // If the command isn't take, we have a relation between two objects
+        if(cmdverb == "move"){ // If the command isn't take, we have a relation between two objects
           //Gets all the objects we want to have a relation to
+          possibleObj = interpretEntity(cmdent, state);
           if(cmdloc.entity.object.form != "floor"){
             relationObj = interpretEntity(cmdloc.entity, state);
           } else {
@@ -155,8 +152,8 @@ module Interpreter {
 
           return interpretation;
 
-        } else { // If the command is take, the goal is to hold an object
-
+        } else if(cmdverb == "take"){ // If the command is take, the goal is to hold an object
+          possibleObj = interpretEntity(cmdent, state);
           // If there are no matches for the requested object, throw an error
           if(possibleObj.length < 1){
             throw new Error("No possible object!")
@@ -169,6 +166,29 @@ module Interpreter {
             }
           }
           return interpretation;
+        } else {
+          if(!state.holding){
+            throw new Error("I have nothing to put down!")
+          }
+          if(cmdloc.entity.object.form != "floor"){
+            relationObj = interpretEntity(cmdloc.entity, state);
+          } else {
+            relationObj = ["floor"]
+          }
+          if(relationObj.length < 1){
+            throw new Error("No possible location!");
+          }
+          var objRel = cmdloc.relation;
+          for (var l of relationObj){
+            if(allowedPhysics(state.holding, l, objRel, state)){
+              interpretation.push([{polarity: true, relation: objRel, args: [state.holding, l]}]);
+            }
+          }
+          if(interpretation.length == 0){
+            throw new Error("No interpretation!");
+          }
+          return interpretation;
+
         }
     }
 
