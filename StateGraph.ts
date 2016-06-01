@@ -12,9 +12,10 @@ class StateNode {
     ) {}
 
     add(action : String) : StateNode {
-        return null;
+        return null; //We do not use this for this particular graph implementation
     }
 
+    //More like an equals function; returns 0 if parameter is not equal to this.
     compareTo(other : StateNode) : number {
         var thisState = this.state.currentState;
         var otherState = other.state.currentState;
@@ -63,9 +64,7 @@ class StateGraph implements Graph<StateNode> {
     constructor(
       startingState : PlannerTextWorld
       //some form of representing the endstate
-    ) {
-      //shit to do in constructor goes here
-     }
+    ) {} //Nothing more to do in the constructor
      isGoalNode(n : StateNode) : boolean {
        return n.state.isGoal()
      }

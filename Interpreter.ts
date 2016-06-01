@@ -129,10 +129,10 @@ module Interpreter {
               if(state.holding != null){
                   possibleObj.push(state.holding); //This is not always right...
               } else {
-                  throw new Error("No possible object!");
+                  throw new Error("No such object was found!");
               }
           } else if(relationObj.length < 1) {
-            throw new Error("No possible location!")
+            throw new Error("No such location was found!")
           }
 
           // Create commands for all possible relations between the different objects
@@ -147,7 +147,7 @@ module Interpreter {
 
           // If there are no interpretations, throw an error
           if(interpretation.length == 0){
-            throw new Error("No interpretation!");
+            throw new Error("No interpretation was found!");
           }
 
           return interpretation;
@@ -156,7 +156,7 @@ module Interpreter {
           possibleObj = interpretEntity(cmdent, state);
           // If there are no matches for the requested object, throw an error
           if(possibleObj.length < 1){
-            throw new Error("No possible object!")
+            throw new Error("No such object was found!")
           }
           var interpretation : DNFFormula = [];
           for (var s of possibleObj){
@@ -168,7 +168,7 @@ module Interpreter {
           return interpretation;
         } else {
           if(!state.holding){
-            throw new Error("I have nothing to put down!")
+            throw new Error("There is nothing to put down!")
           }
           if(cmdloc.entity.object.form != "floor"){
             relationObj = interpretEntity(cmdloc.entity, state);
@@ -176,7 +176,7 @@ module Interpreter {
             relationObj = ["floor"]
           }
           if(relationObj.length < 1){
-            throw new Error("No possible location!");
+            throw new Error("There is no such location!");
           }
           var objRel = cmdloc.relation;
           for (var l of relationObj){
@@ -185,7 +185,7 @@ module Interpreter {
             }
           }
           if(interpretation.length == 0){
-            throw new Error("No interpretation!");
+            throw new Error("No interpretation was found!");
           }
           return interpretation;
 
@@ -487,7 +487,7 @@ module Interpreter {
       }
 
       // This should never happen as we always get
-      throw new Error("No mathcing stack");
+      throw new Error("Unable to find the entity while interpreting");
 
     }
     //Find all objects in the world matching a objectdefinition.

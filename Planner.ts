@@ -31,7 +31,7 @@ module Planner {
                 var result : PlannerResult = <PlannerResult>interpretation;
                 result.plan = planInterpretation(result.interpretation, currentState);
                 if (result.plan.length == 0) {
-                    result.plan.push("That is already true!");
+                    result.plan.push("Your request is already true");
                 }
                 plans.push(result);
             } catch(err) {
@@ -80,7 +80,7 @@ module Planner {
 
         if(interpretation[0].length > 1 || interpretation.length > 1){
           //Handle ambiguity.
-          throw new Error("ambiguous interpretation")
+          throw new Error("The provided interpretation is ambiguous")
         }
 
         var plan : string[] = [];

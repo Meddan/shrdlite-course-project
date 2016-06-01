@@ -139,12 +139,12 @@ class PlannerTextWorld extends TextWorld {
         }
       }
       // This should never happen as we always get
-      throw new Error("No matching stack");
+      throw new Error("Error while searching stacks for object " + ent);
 
     }
     public leftClone() : PlannerTextWorld {
         if (this.currentState.arm <= 0) {
-            throw "already at edge!";
+            throw "Can't move the arm further left";
         }
         var newWorld : WorldState = cloneWorldState(this.currentState);
         newWorld.arm--;
@@ -153,7 +153,7 @@ class PlannerTextWorld extends TextWorld {
 
     public rightClone() : PlannerTextWorld {
         if (this.currentState.arm >= this.currentState.stacks.length - 1) {
-            throw "already at edge!";
+            throw "Can't move the arm further right";
         }
         var newWorld : WorldState = cloneWorldState(this.currentState);
         newWorld.arm++;
@@ -162,7 +162,7 @@ class PlannerTextWorld extends TextWorld {
 
     public pickClone() : PlannerTextWorld {
         if (this.currentState.holding) {
-            throw "already holding something"
+            throw "Already holding something"
         }
         var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
@@ -174,7 +174,7 @@ class PlannerTextWorld extends TextWorld {
     }
     public dropClone() : PlannerTextWorld {
         if (!this.currentState.holding) {
-            throw "Not holding anything!";
+            throw "Not holding anything to drop";
         }
         var newWorld : WorldState = cloneWorldState(this.currentState);
         var stack = newWorld.arm;
